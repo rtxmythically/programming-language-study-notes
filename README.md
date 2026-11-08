@@ -9,3 +9,5 @@
 直接開啟 index.html 即可使用，頁面無外部套件。網站中的追蹤器用固定範例示範執行順序，自寫的程式可下載後使用 C17 編譯器測試。
 
 [淡江大學公開教學計畫](https://webp1.emis.tku.edu.tw/115_1/115_1_0635.PDF)
+
+介面參考[計算機概論互動筆記](https://rtxmythically.github.io/computer-science-study-notes/#ch4-transistors)，並依 Damir Sokolovsky 的 [unslop](https://github.com/heydamir/unslop) 方法整理（CC BY 4.0）。

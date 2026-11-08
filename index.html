@@ -3,115 +3,359 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
 <meta name="description" content="從第一支 C 程式到陣列。用繁體中文讀程式、追蹤變數，再動手做十四題實作。">
 <title>程式語言（一）｜C 語言練習室</title>
+<script>
+try {
+  if (localStorage.getItem("c-practice-v1:theme") === "light") {
+    document.documentElement.dataset.theme = "light";
+  }
+} catch { /* Use the default theme when browser storage is unavailable. */ }
+</script>
 <style>
-:root{color-scheme:light;--paper:#f5f4ee;--card:#fffdf8;--ink:#202823;--muted:#515c53;--rule:#d7dad0;--green:#1a543c;--tint:#e3eee4;--dark:#172b24;--code:#ebf4ee;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
-*{box-sizing:border-box}
-html{scroll-padding-top:1rem}
-body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif}
-a{color:var(--green);text-underline-offset:.2em}
-button,textarea{font:inherit}
-button{cursor:pointer;color:var(--green);background:var(--card);border:1px solid var(--green);border-radius:.4rem;padding:.38rem .75rem}
-button:disabled{opacity:.5;cursor:default}
-:focus-visible{outline:3px solid #a65621;outline-offset:4px}
-code,pre{font-family:var(--mono);font-size:.92em}
-p,ul,ol{margin:.55rem 0 1rem}
-h1,h2,h3{margin:0;line-height:1.2;letter-spacing:-.035em}
-h1{font-size:clamp(2.7rem,6vw,5.1rem)}
-h2{font-size:clamp(1.65rem,3vw,2.55rem)}
-h3{font-size:1.15rem}
-.wrap{max-width:1240px;margin:auto;padding-inline:clamp(1rem,4vw,3rem)}
-header{background:var(--dark);color:#f4f6ec}
-.top{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding-block:1rem;border-bottom:1px solid #537061;font-weight:650}
-.top a{color:#d6efdf}
-.hero{padding-block:clamp(2.3rem,7vw,5rem);display:grid;grid-template-columns:minmax(0,1.6fr) minmax(15rem,1fr);align-items:end;gap:clamp(1.1rem,4vw,4rem)}
-.hero p{max-width:35rem;color:#d1e1d6;margin-bottom:0}
-.eyebrow{font:700 .85rem/1.5 var(--mono);letter-spacing:.05em;color:var(--green);margin:0 0 .75rem}
-.hero .eyebrow{color:#aad1b9}
-.hero-aside{border-left:1px solid #537061;padding-left:1.2rem}
-.hero-aside ol{padding-left:1.4rem;margin:0;color:#e4efe7}
-.cta{display:inline-block;margin-top:1.3rem;padding:.48rem .85rem;border-radius:.4rem;background:#d6efdf;color:var(--dark);font-weight:750;text-decoration:none}
-.layout{display:grid;grid-template-columns:15rem minmax(0,1fr);gap:clamp(1rem,4vw,3rem);padding-block:2rem 4rem}
-nav{position:sticky;top:1rem;align-self:start;max-height:calc(100vh - 2rem);overflow:auto}
-nav ol{list-style:none;margin:0;padding:0}
-nav a{display:block;padding:.37rem .5rem;color:var(--ink);text-decoration:none;border-radius:.35rem}
-nav a:hover,nav a[aria-current="location"]{background:var(--tint);color:var(--green)}
-nav a span{font-family:var(--mono);margin-right:.55rem;color:var(--green)}
-.progress{color:var(--muted);font-size:.9rem;margin:.9rem .5rem 0}
-.intro,.lesson,.practice,.source{background:var(--card);border:1px solid var(--rule);border-radius:.65rem;padding:clamp(1rem,3vw,2rem);margin-bottom:1.15rem;min-width:0}
-.intro p:last-child,.source p:last-child{margin-bottom:0}
-.lesson-head{padding-bottom:.85rem;border-bottom:1px solid var(--rule);margin-bottom:1rem}
-.lead{font-size:1.06rem}
-.lab{border:1px solid var(--rule);border-radius:.5rem;overflow:hidden;margin:1.1rem 0}
-.lab-title{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.6rem .85rem;background:var(--tint);color:var(--green)}
-.lab-title span{font:600 .82rem/1.4 var(--mono)}
-pre{margin:0;overflow:auto;background:var(--dark);color:var(--code);padding:.85rem;tab-size:4;line-height:1.55}
-pre.trace-code{padding:0}
-.trace-code code{font-size:inherit}
-.line{display:block;padding:0 .75rem;min-height:1.55em;border-left:4px solid transparent}
-.line:first-child{padding-top:.6rem}
-.line:last-child{padding-bottom:.6rem}
-.line.active{background:#315343;border-color:#acd8a9}
-.ln{display:inline-block;color:#b2c5b9;width:2.2em;user-select:none}
-.lab-controls,.actions{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem}
-.trace-body{padding:.85rem}
-.trace-note{margin:.6rem 0 0;min-height:3.5em}
-.trace-output{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.65rem}
-.trace-output div{background:var(--paper);border:1px solid var(--rule);padding:.5rem .65rem;min-width:0;border-radius:.35rem}
-.trace-output strong,.trace-output code{display:block}
-.trace-output code{white-space:pre-wrap;overflow-wrap:anywhere}
-.check{padding:.9rem;border-left:4px solid var(--green);background:var(--tint);margin:1rem 0}
-.check p{margin:.35rem 0 .5rem}
-label{display:block;font-weight:650}
-textarea{display:block;width:100%;padding:.55rem .65rem;border:1px solid #889a8b;border-radius:.35rem;background:var(--card);color:var(--ink);font-family:var(--mono);resize:vertical;margin:.3rem 0 .65rem}
-.feedback{min-height:1.6em;margin:0;font-weight:650;color:var(--green)}
-details{margin:.6rem 0}
-summary{cursor:pointer;color:var(--green);font-weight:700}
-details pre{margin:.65rem 0;border-radius:.35rem}
-.task{border-top:1px solid var(--rule);padding:1.2rem 0 .4rem}
-.task-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
-.task-grid strong{display:block}
-.task-grid pre{border-radius:.35rem;margin:.25rem 0}
-.badge{font-size:.85rem;font-weight:650;color:var(--green)}
-.skip{position:absolute;top:0;left:1rem;transform:translateY(-110%);background:var(--card);padding:.5rem;z-index:1}
-.skip:focus{transform:none}
-footer{color:var(--muted);font-size:.9rem}
-@media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr)}nav{position:static;max-height:none}nav ol{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))}}
-@media(max-width:620px){.hero{grid-template-columns:1fr}.top{font-size:.85rem}.trace-output{grid-template-columns:1fr}.lab-title{align-items:start}}
-@media print{header{background:white;color:#202823}.hero p,.hero .eyebrow,.hero-aside ol,.top a{color:#202823}.layout{display:block}nav,button,textarea,.cta{display:none}pre{white-space:pre-wrap;background:white;color:black;border:1px solid #888}}
+:root {
+  color-scheme: dark;
+  --paper: #191816;
+  --sidebar: #151412;
+  --card: #211f1c;
+  --raised: #2c2924;
+  --ink: #f3ede3;
+  --secondary: #d2c8bb;
+  --muted: #b8ad9d;
+  --rule: #443d35;
+  --control: #847766;
+  --accent: #ffae8c;
+  --on-accent: #2b170f;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --side-width: 264px;
+  --radius: 16px;
+}
+html[data-theme="light"] {
+  color-scheme: light;
+  --paper: #f1eee8;
+  --sidebar: #ebe7df;
+  --card: #faf8f3;
+  --raised: #eee9e0;
+  --ink: #28241e;
+  --secondary: #504a40;
+  --muted: #685f52;
+  --rule: #d7d1c6;
+  --control: #958878;
+  --accent: #8d3f27;
+  --on-accent: #fffaf4;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 76px; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.8 system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+a { color: var(--accent); text-underline-offset: .2em; }
+button, textarea, input { font: inherit; }
+button, .cta, .secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 4px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--raised);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+button:not(:disabled):hover, .secondary-link:hover { border-color: var(--control); }
+button:disabled { opacity: .5; cursor: default; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+code, pre { font-family: var(--mono); font-size: .92em; }
+p, ul { margin: 0 0 16px; }
+h1, h2, h3 { margin: 0; line-height: 1.25; font-weight: 600; }
+h1 { font-size: clamp(32px, 4vw, 52px); letter-spacing: -.025em; }
+h2 { font-size: clamp(24px, 3vw, 32px); letter-spacing: -.015em; }
+h3 { font-size: 18px; }
+strong { font-weight: 600; }
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--side-width);
+  padding: 24px 16px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-right: 1px solid var(--rule);
+  background: var(--sidebar);
+  z-index: 3;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 16px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  text-decoration: none;
+}
+.brand-mark {
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  height: 40px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--card);
+  font: 600 14px var(--mono);
+}
+.brand strong, .brand small { display: block; }
+.brand small { color: var(--muted); font-size: 12px; }
+.nav-label { margin: 24px 8px 4px; color: var(--muted); font-size: 12px; }
+.sidebar ol, .sidebar ul { list-style: none; margin: 0; padding: 0; }
+.sidebar nav a {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  margin-block: 2px;
+  padding: 4px 8px;
+  border-inline-start: 2px solid transparent;
+  border-radius: 4px;
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 1.45;
+  text-decoration: none;
+}
+.sidebar nav a:hover, .sidebar nav a[aria-current="location"] { background: var(--raised); color: var(--ink); }
+.sidebar nav a[aria-current="location"] { border-inline-start-color: var(--accent); font-weight: 600; }
+.sidebar nav a span { color: var(--muted); font: 500 12px var(--mono); }
+.sidebar nav a[aria-current="location"] span { color: var(--accent); }
+.side-progress { margin-top: 24px; padding: 16px 8px 0; border-top: 1px solid var(--rule); }
+.progress { margin: 0 0 8px; color: var(--muted); font-size: 13px; }
+.side-progress progress { display: block; width: 100%; height: 4px; border: 0; border-radius: 4px; background: var(--rule); }
+.side-progress progress::-webkit-progress-bar { background: var(--rule); border-radius: 4px; }
+.side-progress progress::-webkit-progress-value { background: var(--accent); border-radius: 4px; }
+.side-progress progress::-moz-progress-bar { background: var(--accent); border-radius: 4px; }
+.layout { margin-left: var(--side-width); }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 8px clamp(16px, 3vw, 40px);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+.topbar-title { margin-right: auto; color: var(--secondary); font-size: 14px; }
+.topbar a { color: var(--secondary); font-size: 14px; text-decoration: none; }
+.topbar a:hover { color: var(--accent); }
+.menu-button { display: none; }
+.content { max-width: 1160px; margin: 0 auto; padding: 24px 32px 64px; }
+.hero, .intro, .lesson, .practice, .source {
+  min-width: 0;
+  margin-bottom: 24px;
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+}
+.hero-copy p:not(.eyebrow) { max-width: 32rem; margin: 12px 0 20px; color: var(--secondary); }
+.eyebrow { margin: 0 0 8px; color: var(--muted); font: 500 12px/1.5 var(--mono); }
+.hero-actions, .lab-controls, .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cta, button.primary { border-color: var(--accent); background: var(--accent); color: var(--on-accent); font-weight: 600; }
+.cta:hover, button.primary:not(:disabled):hover { opacity: .9; }
+.hero-example { margin: 0; min-width: 0; border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.hero-example figcaption { padding: 8px 16px; background: var(--raised); color: var(--secondary); font-size: 13px; }
+.hero-example .snapshot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding: 8px 16px;
+  border-top: 1px solid #494139;
+  background: #292520;
+  color: #f1e6d7;
+  font: 13px/1.6 var(--mono);
+}
+.snapshot strong { color: #ffae8c; }
+.intro h2, .source h2, .practice h2 { margin-bottom: 12px; }
+.intro p:last-child, .source p:last-child { margin-bottom: 0; }
+.lesson-head { display: flex; align-items: start; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.lead { margin: 8px 0 0; color: var(--secondary); }
+.complete {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 4px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--raised);
+  font-size: 13px;
+  cursor: pointer;
+}
+.complete input { margin: 0; accent-color: var(--accent); }
+.concepts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.concept {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--raised);
+}
+.concept h3 { margin-bottom: 8px; font-size: 16px; }
+.concept p { margin: 0; color: var(--secondary); font-size: 14px; }
+.pitfall, .check {
+  margin: 16px 0 0;
+  padding: 12px 16px;
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--accent);
+  border-radius: 8px;
+  background: var(--raised);
+}
+.pitfall strong { color: var(--accent); }
+.lab { margin: 20px 0; overflow: hidden; border: 1px solid var(--rule); border-radius: 12px; }
+.lab-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--raised);
+}
+.lab-title span, .lab-controls span { color: var(--muted); font: 500 12px/1.5 var(--mono); }
+pre { margin: 0; padding: 12px 16px; overflow: auto; background: #211e1a; color: #f4eadc; tab-size: 4; line-height: 1.6; }
+pre code { font-size: inherit; }
+pre.trace-code { padding: 8px 0; }
+.trace-code code { display: block; min-width: max-content; }
+.line { display: block; min-height: 1.6em; padding: 0 12px; border-left: 3px solid transparent; }
+.line.active { border-color: #ffae8c; background: #423329; }
+.ln { display: inline-block; width: 2.2em; color: #bdb0a1; user-select: none; }
+.trace-body { padding: 16px; }
+.trace-note { margin: 12px 0 0; min-height: 2.5em; }
+.trace-output, .task-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.trace-output { margin-top: 8px; }
+.trace-output div { min-width: 0; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--raised); }
+.trace-output strong, .trace-output code, .task-grid strong { display: block; }
+.trace-output strong, .task-grid strong { color: var(--muted); font-size: 12px; }
+.trace-output code { white-space: pre-wrap; overflow-wrap: anywhere; }
+.check p { margin: 4px 0 8px; }
+label { display: block; font-weight: 600; }
+textarea {
+  display: block;
+  width: 100%;
+  margin: 4px 0 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--control);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--mono);
+  resize: vertical;
+}
+.check .feedback { min-height: 1.6em; margin: 4px 0; color: var(--accent); font-weight: 600; }
+details { margin: 8px 0; }
+summary { padding: 8px 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--raised); cursor: pointer; font-weight: 600; }
+summary::marker { color: var(--accent); }
+details[open] > summary { margin-bottom: 8px; }
+details pre { margin: 8px 0; border-radius: 8px; }
+.task { margin-top: 16px; padding: 20px; border: 1px solid var(--rule); border-radius: 12px; }
+.task h3 { margin-bottom: 8px; }
+.task-grid pre { margin: 4px 0 12px; border-radius: 8px; }
+.badge { color: var(--muted); font-size: 13px; }
+.skip { position: fixed; z-index: 4; top: 0; left: 16px; transform: translateY(-110%); padding: 8px; background: var(--card); }
+.skip:focus { transform: none; }
+footer { color: var(--muted); font-size: 13px; }
+@media (max-width: 1050px) {
+  .concepts { grid-template-columns: 1fr; gap: 8px; }
+}
+@media (max-width: 800px) {
+  .layout { margin-left: 0; }
+  .sidebar { display: none; inset: 60px auto 0 0; width: min(288px, 88vw); }
+  .sidebar[data-open] { display: block; }
+  .menu-button { display: inline-flex; }
+  .content { padding-inline: 16px; }
+}
+@media (max-width: 600px) {
+  .hero { grid-template-columns: 1fr; }
+  .topbar { gap: 8px; padding-inline: 12px; }
+  .topbar-title { font-size: 13px; }
+  .topbar a { display: none; }
+  .lesson-head { flex-wrap: wrap; gap: 12px; }
+  .trace-output { grid-template-columns: 1fr; }
+  .task { padding: 12px; }
+}
+@media print {
+  body, .hero, .intro, .lesson, .practice, .source, .concept, .pitfall, .check, pre { background: #fff; color: #111; }
+  .sidebar, .topbar, button, textarea, .hero-actions, .skip { display: none; }
+  .layout { margin-left: 0; }
+  .eyebrow, .lead, .concept p, .hero-copy p:not(.eyebrow) { color: #222; }
+  pre { white-space: pre-wrap; border: 1px solid #888; }
+}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">跳到教材</a>
-<header>
-  <div class="wrap">
-    <div class="top"><span>程式語言（一）</span><a href="#sources">課程對照與來源</a></div>
-    <div class="hero">
-      <div>
-        <p class="eyebrow">PROGRAMMING I</p>
-        <h1>C 語言練習室</h1>
-        <p>從第一支程式寫到陣列。先猜輸出，逐步追蹤程式執行，再把同一個觀念用到新題目。</p>
-        <a class="cta" href="#lesson-1">開始第一課 ↓</a>
-      </div>
-      <div class="hero-aside">
-        <p class="eyebrow">每一課怎麼用</p>
-        <ol><li>讀懂觀念與常見錯誤</li><li>操作範例，看變數怎麼變</li><li>獨立作答，再展開解析</li></ol>
-      </div>
-    </div>
-  </div>
-</header>
-<div class="wrap layout">
+<aside class="sidebar" id="sidebar">
+  <a class="brand" href="#overview">
+    <span class="brand-mark" aria-hidden="true">C</span>
+    <span><strong>程式語言（一）</strong><small>C 語言互動筆記</small></span>
+  </a>
   <nav aria-label="學習單元">
-    <p class="eyebrow">學習路線</p>
-    <ol id="nav">
+    <p class="nav-label">總覽</p>
+    <ul><li><a href="#overview"><span aria-hidden="true">⌂</span>首頁</a></li></ul>
+    <p class="nav-label">課程筆記</p>
+    <ol id="nav"></ol>
+    <p class="nav-label">實作與來源</p>
+    <ul>
       <li><a href="#practice"><span>練習</span>八題基礎實作</a></li>
       <li><a href="#course-practice"><span>導練</span>六題課內同型題</a></li>
       <li><a href="#sources"><span>來源</span>教材對照</a></li>
-    </ol>
-    <p class="progress" id="progress" aria-live="polite"></p>
+    </ul>
   </nav>
-  <main id="main">
+  <div class="side-progress">
+    <p class="progress" id="progress" aria-live="polite"></p>
+    <progress id="progress-bar" aria-label="學習進度" value="0" max="7"></progress>
+  </div>
+</aside>
+<div class="layout">
+  <div class="topbar">
+    <button class="menu-button" id="menu-button" type="button" aria-controls="sidebar" aria-expanded="false">章節</button>
+    <span class="topbar-title">程式語言（一） · 互動筆記</span>
+    <a href="#practice">實作練習</a>
+    <a href="#sources">課程來源</a>
+    <button id="theme-button" type="button">切換淺色</button>
+  </div>
+  <main class="content" id="main">
+    <header class="hero" id="overview">
+      <div class="hero-copy">
+        <p class="eyebrow">Programming I · 從輸入輸出到陣列</p>
+        <h1>C 語言練習室</h1>
+        <p>先猜輸出，逐步追蹤程式執行，再把同一個觀念用到新題目。</p>
+        <div class="hero-actions">
+          <a class="cta" href="#lesson-1">開始第一課 →</a>
+          <a class="secondary-link" href="#practice">直接做實作題</a>
+        </div>
+      </div>
+      <figure class="hero-example">
+        <figcaption>第 5 課 · 迴圈執行到第 2 輪</figcaption>
+        <pre class="trace-code"><code><span class="line"><span class="ln" aria-hidden="true">5</span>while (i &lt;= 3) {</span><span class="line active"><span class="ln" aria-hidden="true">6</span>    sum += i;</span><span class="line"><span class="ln" aria-hidden="true">7</span>    ++i;</span><span class="line"><span class="ln" aria-hidden="true">8</span>}</span></code></pre>
+        <div class="snapshot"><span>i = 2</span><span>sum = <strong>3</strong></span></div>
+      </figure>
+    </header>
     <section class="intro">
       <h2>從讀懂一行，到自己寫一題</h2>
       <p>前七課依淡江「程式語言（一）」B 班公開教學計畫的期中前主題排列，搭配 iClass 教材和實習題型。正文用 C17 示範，另附 <a href="#cpp">C++ 輸入輸出對照</a>。每節的程式、追蹤與題目均為自編。</p>
@@ -161,6 +405,7 @@ const lessons = [
   {
     title: "第一支 C 程式",
     tag: "第 1 週 · 基本結構與輸出",
+    topics: ["從 main 開始", "用 printf 輸出", "讀懂程式結構"],
     goal: "認得 main、標頭檔與輸出指令，分清楚原始碼和執行結果。",
     notes: [
       "程式從 main 開始。stdio.h 宣告 printf 等標準輸入輸出函式。",
@@ -183,6 +428,7 @@ int main(void) {
   {
     title: "型別、運算式與輸入",
     tag: "第 2 週 · int、double、scanf",
+    topics: ["整數除法", "求餘數", "用 scanf 讀取"],
     goal: "預測整數除法和餘數，並用正確格式讀取數字。",
     notes: [
       "int / int 的結果仍是整數，小數部分向零截去。要保留小數，可以先把其中一個運算元轉成 double。",
@@ -209,6 +455,7 @@ int main(void) {
   {
     title: "用 if 處理條件",
     tag: "第 3 週 · if / else if / else",
+    topics: ["判斷的順序", "比較與組合條件", "測試門檻"],
     goal: "把分段規則寫成互斥分支，特別檢查剛好等於門檻的情況。",
     notes: [
       "if 先檢查第一個條件；失敗才檢查 else if；全部失敗才執行 else。",
@@ -237,6 +484,7 @@ int main(void) {
   {
     title: "用 switch 處理選單",
     tag: "第 4 週 · case / break / default",
+    topics: ["固定的選項", "跳出或繼續執行", "共用分支"],
     goal: "用固定的整數或字元選項分派行為，知道何時會落入下一個 case。",
     notes: [
       "switch 的運算式在這裡用整數。case 的值在編譯時就要確定。",
@@ -263,6 +511,7 @@ int main(void) {
   {
     title: "用 while 與 do while 重複",
     tag: "第 5 週 · 迴圈條件與累加",
+    topics: ["while 先判斷", "do while 先執行", "累加的順序"],
     goal: "分清楚條件檢查時機，寫出會停止的累加迴圈。",
     notes: [
       "while 先檢查條件，條件一開始為假時，迴圈本體執行零次。",
@@ -289,6 +538,7 @@ int main(void) {
   {
     title: "提早結束、跳過與標籤",
     tag: "第 6 週 · break / continue / goto",
+    topics: ["break 離開一層", "continue 跳過本輪", "goto 跳到標籤"],
     goal: "分清楚離開整個迴圈、跳過本輪，以及跳到同一函式裡的標籤。",
     notes: [
       "break 跳出最內層的迴圈或 switch。巢狀迴圈裡只會離開一層。",
@@ -316,6 +566,7 @@ int main(void) {
   {
     title: "用陣列處理多筆資料",
     tag: "第 7 週 · 索引、走訪、最大值",
+    topics: ["索引從 0 開始", "追蹤最大值", "走訪整個陣列"],
     goal: "用索引讀取元素，透過迴圈掃描陣列並避免越界。",
     notes: [
       "int values[4] 有四格，索引是 0、1、2、3。values[4] 已超出陣列範圍。",
@@ -642,6 +893,7 @@ function trace(lesson, number) {
   const controls = element("div", undefined, "lab-controls");
   const previous = button("上一步", () => { step--; render(); });
   const next = button("下一步", () => { step++; render(); });
+  next.classList.add("primary");
   const reset = button("重來", () => { step = 0; render(); });
   const download = button("下載 .c", () => fileDownload("lesson-" + number + ".c", lesson.code + "\n"));
   const count = element("span");
@@ -691,7 +943,7 @@ function quickCheck(lesson, number) {
   input.rows = lesson.answer.split("\n").length + 1;
   input.autocomplete = "off";
   input.spellcheck = false;
-  const label = element("label", "先作答");
+  const label = element("label", "本節一題 · 先作答");
   label.htmlFor = input.id;
   const feedback = element("p", "", "feedback");
   feedback.setAttribute("role", "status");
@@ -710,17 +962,24 @@ function quickCheck(lesson, number) {
 function updateProgress() {
   const count = lessons.filter((_, index) => read("done-" + (index + 1)) === "true").length;
   document.getElementById("progress").textContent = "已完成 " + count + " / " + lessons.length + " 課";
+  const bar = document.getElementById("progress-bar");
+  bar.max = lessons.length;
+  bar.value = count;
 }
 
 function renderLesson(lesson, number) {
   const section = element("section", undefined, "lesson");
   section.id = "lesson-" + number;
   const head = element("div", undefined, "lesson-head");
-  const heading = element("h2", lesson.title);
-  head.append(element("p", lesson.tag, "eyebrow"), heading);
-  const notes = element("ul");
-  for (const note of lesson.notes) notes.append(element("li", note));
-  const pitfall = element("p");
+  const title = element("div");
+  title.append(element("p", lesson.tag, "eyebrow"), element("h2", lesson.title), element("p", lesson.goal, "lead"));
+  const notes = element("div", undefined, "concepts");
+  for (const [index, note] of lesson.notes.entries()) {
+    const concept = element("div", undefined, "concept");
+    concept.append(element("h3", lesson.topics[index]), element("p", note));
+    notes.append(concept);
+  }
+  const pitfall = element("p", undefined, "pitfall");
   pitfall.append(element("strong", "常見錯誤　"), document.createTextNode(lesson.pitfall));
 
   const completion = element("input");
@@ -730,10 +989,10 @@ function renderLesson(lesson, number) {
     save("done-" + number, String(completion.checked));
     updateProgress();
   });
-  const mark = element("label");
-  mark.append(completion, document.createTextNode(" 我已完成這一課"));
-  section.append(head, element("p", lesson.goal, "lead"), notes, pitfall,
-    trace(lesson, number), quickCheck(lesson, number), mark);
+  const mark = element("label", undefined, "complete");
+  mark.append(completion, document.createTextNode("標記已學"));
+  head.append(title, mark);
+  section.append(head, notes, pitfall, trace(lesson, number), quickCheck(lesson, number));
   return section;
 }
 
@@ -789,13 +1048,11 @@ for (const [index, lesson] of lessons.entries()) {
 }
 nav.prepend(anchors);
 function markCurrentLocation() {
-  for (const link of nav.querySelectorAll("a")) {
-    if (link.hash === location.hash) link.setAttribute("aria-current", "location");
+  for (const link of sidebar.querySelectorAll("nav a")) {
+    if (link.hash === (location.hash || "#overview")) link.setAttribute("aria-current", "location");
     else link.removeAttribute("aria-current");
   }
 }
-addEventListener("hashchange", markCurrentLocation);
-markCurrentLocation();
 const tasksList = document.getElementById("tasks");
 for (const [index, task] of tasks.entries()) tasksList.append(renderTask(task, index + 1, "practice"));
 const courseTasksList = document.getElementById("course-tasks");
@@ -804,6 +1061,48 @@ const cppLink = document.querySelector('a[href="#cpp"]');
 const cppDetails = document.getElementById("cpp");
 cppLink.addEventListener("click", () => { cppDetails.open = true; });
 if (location.hash === "#cpp") cppDetails.open = true;
+
+const sidebar = document.getElementById("sidebar");
+const menu = document.getElementById("menu-button");
+function setMenu(open) {
+  sidebar.toggleAttribute("data-open", open);
+  menu.setAttribute("aria-expanded", String(open));
+}
+menu.addEventListener("click", () => {
+  const open = !sidebar.hasAttribute("data-open");
+  setMenu(open);
+  if (open) sidebar.querySelector(".brand").focus();
+});
+sidebar.addEventListener("click", event => {
+  const link = event.target.closest("a");
+  if (!link || !sidebar.hasAttribute("data-open")) return;
+  setMenu(false);
+  const destination = document.getElementById(link.hash.slice(1));
+  if (destination) {
+    destination.tabIndex = -1;
+    destination.focus({ preventScroll: true });
+  }
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && sidebar.hasAttribute("data-open")) {
+    setMenu(false);
+    menu.focus();
+  }
+});
+
+const themeButton = document.getElementById("theme-button");
+function showThemeButton() {
+  themeButton.textContent = document.documentElement.dataset.theme === "light" ? "切換深色" : "切換淺色";
+}
+themeButton.addEventListener("click", () => {
+  const theme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  document.documentElement.dataset.theme = theme;
+  save("theme", theme);
+  showThemeButton();
+});
+showThemeButton();
+addEventListener("hashchange", markCurrentLocation);
+markCurrentLocation();
 updateProgress();
 if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
 </script>
