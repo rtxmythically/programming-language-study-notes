@@ -276,6 +276,27 @@ details pre { margin: 8px 0; border-radius: 8px; }
 .task h3 { margin-bottom: 8px; }
 .task-grid pre { margin: 4px 0 12px; border-radius: 8px; }
 .badge { color: var(--muted); font-size: 13px; }
+.source-jumps { margin: 16px 0; }
+.material-filter { max-width: 360px; }
+.material-filter input {
+  width: 100%;
+  min-height: 40px;
+  margin: 4px 0 8px;
+  padding: 4px 12px;
+  border: 1px solid var(--control);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+}
+.material-group, .homework-group { margin: 16px 0 0; }
+.material-list, .homework-list { margin: 0; padding-inline-start: 24px; }
+.material-list li, .homework-list li { padding-block: 8px; }
+.material-list li + li, .homework-list li + li { border-top: 1px solid var(--rule); }
+.material-list code { overflow-wrap: anywhere; }
+.material-list p, .homework-list p { margin: 4px 0 0; }
+.material-group > summary, .homework-group > summary { padding: 12px 16px; }
+.homework-group > p, .material-group > p { margin-bottom: 8px; }
+.source-notes { margin-top: 20px; }
 .skip { position: fixed; z-index: 4; top: 0; left: 16px; transform: translateY(-110%); padding: 8px; background: var(--card); }
 .skip:focus { transform: none; }
 footer { color: var(--muted); font-size: 13px; }
@@ -319,6 +340,12 @@ footer { color: var(--muted); font-size: 13px; }
     <ul><li><a href="#overview"><span aria-hidden="true">⌂</span>首頁</a></li></ul>
     <p class="nav-label">課程筆記</p>
     <ol id="nav"></ol>
+    <p class="nav-label">iClass 課內資料</p>
+    <ul>
+      <li><a href="#class-materials"><span>教材</span>老師教材索引</a></li>
+      <li><a href="#class-homework"><span>作業</span>七週作業整理</a></li>
+      <li><a href="#class-exercises"><span>課堂</span>課堂與實習練習</a></li>
+    </ul>
     <p class="nav-label">實作與來源</p>
     <ul>
       <li><a href="#practice"><span>練習</span>八題基礎實作</a></li>
@@ -347,7 +374,7 @@ footer { color: var(--muted); font-size: 13px; }
         <p>先猜輸出，逐步追蹤程式執行，再把同一個觀念用到新題目。</p>
         <div class="hero-actions">
           <a class="cta" href="#lesson-1">開始第一課 →</a>
-          <a class="secondary-link" href="#practice">直接做實作題</a>
+          <a class="secondary-link" href="#class-materials">查看老師教材</a>
         </div>
       </div>
       <figure class="hero-example">
@@ -363,6 +390,47 @@ footer { color: var(--muted); font-size: 13px; }
     </section>
     <noscript><p>請啟用 JavaScript 以顯示教材與操作練習。</p></noscript>
     <div id="lessons"></div>
+    <section class="source" id="class-materials">
+      <p class="eyebrow">iClass · 教材</p>
+      <h2>老師教材索引</h2>
+      <p>依 iClass 的兩頁教材清單整理，共 28 筆教材、55 個附件。點開教材可看檔名與閱讀重點；點開原始教材連結可到 iClass 登入查閱原檔。</p>
+      <div class="actions source-jumps">
+        <a class="secondary-link" href="#class-homework">七週作業</a>
+        <a class="secondary-link" href="#class-exercises">課堂與實習練習</a>
+        <a href="https://iclass.tku.edu.tw/course/263868/courseware">iClass 教材清單</a>
+      </div>
+      <label class="material-filter">搜尋教材或檔名
+        <input id="material-filter" type="search" placeholder="例如 while、陣列、20261020">
+      </label>
+      <p class="badge" id="material-count" role="status"></p>
+      <div id="material-library"></div>
+      <details class="source-notes" id="class-reading-examples">
+        <summary>補充範例 · 七個可編譯的 C++ 小程式</summary>
+        <p>下面用本站自編程式補足教材中的格式化、亂數、數學函式、二維陣列與字串。各自存為 .cpp，可用 C++17 編譯。</p>
+        <div id="class-example-library"></div>
+      </details>
+    </section>
+    <section class="source" id="class-homework">
+      <p class="eyebrow">iClass · 已結束作業</p>
+      <h2>七週作業與 10/19 小考</h2>
+      <p>逐題整理老師布置的要求與考點。題目依原課內活動編號，說明以本站文字重述，解題提示可自行展開。10/19 小考與第五週作業是同一組四題，兩個來源放在一起。</p>
+      <div id="homework-library"></div>
+    </section>
+    <section class="source" id="class-exercises">
+      <p class="eyebrow">iClass · 教師公告</p>
+      <h2>課堂與實習練習</h2>
+      <p>收錄 10/12 課堂練習和 11/3 實習公告的全部題型，逐題標示要練的觀念。</p>
+      <div id="class-exercise-library"></div>
+      <details class="source-notes">
+        <summary>其他課務公告</summary>
+        <ul>
+          <li>9/15 提醒課堂使用的環境按 F11 跑程式。快捷鍵依開發環境而異。</li>
+          <li>9/29 公告第三週作業第 4 題可免交。</li>
+          <li>10/27 公告列出期中八題，每題交一個 .cpp 或 .c 檔，考試期間無網路。場次資訊請查看課程公告。</li>
+        </ul>
+        <p><a href="https://iclass.tku.edu.tw/course/263868/bulletin">查看 iClass 公告原文</a></p>
+      </details>
+    </section>
     <section class="practice" id="practice">
       <p class="eyebrow">獨立實作</p>
       <h2>八題基礎實作</h2>
@@ -379,9 +447,9 @@ footer { color: var(--muted); font-size: 13px; }
       <h2>課程對照與來源</h2>
       <ul>
         <li><a href="https://webp1.emis.tku.edu.tw/115_1/115_1_0635.PDF">淡江大學 115 學年度第 1 學期 B 班教學計畫</a>，第 2–3 頁列有每週主題與參考用書。本站七課依第 1–7 週主題排列，實際上課進度與考試範圍依課程公告。</li>
-        <li>2026/11/08 核對 iClass B 班的<a href="https://iclass.tku.edu.tw/course/263868/courseware">教材清單</a>、<a href="https://iclass.tku.edu.tw/course/263868/homework">第 3、6、7 週作業</a>及<a href="https://iclass.tku.edu.tw/course/263868/bulletin">10/12 課堂練習與 11/3 實習練習</a>（需校方帳號登入）。同型題以自編題意、數值與程式呈現。</li>
+        <li>2026/11/08 核對 iClass B 班的<a href="#class-materials">教材清單</a>、<a href="#class-homework">七週作業與 10/19 小考</a>及<a href="#class-exercises">課堂與實習練習</a>。公開頁提供教材索引、重述題意與自編解析，原始附件與題目全文可回 iClass 查閱。</li>
       </ul>
-      <p>教學計畫的下半學期另列函式、遞迴、指標、字串、參數傳遞與記憶體配置；這一版先涵蓋期中複習前的基礎。</p>
+      <p>教學計畫的下半學期另列函式、遞迴、指標、字串、參數傳遞與記憶體配置。本頁收錄截至核對日可見的課內資料，包含 11/3 已出現的字串與字元計數範例。</p>
       <details id="cpp">
         <summary>C 與 C++ 的輸入輸出對照</summary>
         <p>iClass 的 Hello World 範例以 <code>.cpp</code> 提供。下方用一支自編程式對照兩種寫法。C 的 <code>scanf</code> 透過位址寫入變數，C++ 的 <code>std::cin</code> 直接接收變數，用串流狀態檢查讀取是否成功。</p>
@@ -396,11 +464,288 @@ int main() {
         <p>把此例另存成 <code>main.cpp</code>，使用 <code>c++ -std=c++17 -Wall -Wextra main.cpp -o main</code> 編譯。這七課示範的條件、迴圈和陣列基本概念同樣適用。</p>
       </details>
     </section>
-  <footer>公開自學教材 · 範例與練習使用原創內容 · 學習進度僅保存在這個瀏覽器</footer>
+  <footer>公開自學教材 · 課內資料與本站自編練習分區標示 · 學習進度僅保存在這個瀏覽器</footer>
   </main>
 </div>
 <script>
 "use strict";
+const courseBase = "https://iclass.tku.edu.tw/course/263868/";
+const classMaterials = [
+  ["2035193", "Comment 註解", [
+    ["comment.cpp", "用 // 註解單行、用 /* … */ 註解一段。註解可交代目的或假設，編譯時不會執行。"]
+  ]],
+  ["2035194", "Hello World!", [
+    ["helloworld.cpp", "從 main 開始，呼叫輸出函式，把原始碼編譯後再執行。"]
+  ]],
+  ["2035239", "輸出變數值", [
+    ["OutputVariable.cpp", "先把值放進變數，再用與型別相符的格式輸出。%d 對應 int。"]
+  ]],
+  ["2035241", "輸入輸出變數", [
+    ["oneInputOutput.cpp", "讀入整數時用 scanf(\"%d\", &n)，讀取成功後才能使用 n。"]
+  ]],
+  ["2035277", "if 判斷式", [
+    ["if.cpp", "if 只在條件為真時進入區塊。用兩組輸入分別走到成立與不成立。"]
+  ]],
+  ["2035301", "if-else 判斷式", [
+    ["ifelse.cpp", "if 與 else 兩個分支互斥。先寫出各分支應處理的情況。"]
+  ]],
+  ["2035303", "If-else 與相等判斷", [
+    ["ifelseequal.cpp", "== 比較兩個值是否相等，= 會把右側的值指派到左側。"]
+  ]],
+  ["2035321", "大於或等於", [
+    ["largerthanorequalto.cpp", ">= 包含臨界值。用剛好等於門檻的輸入驗證。"]
+  ]],
+  ["2039842", "IF and 且", [
+    ["and.cpp", "&& 表示兩個條件都要成立。左側為假時，右側不會被求值。"]
+  ]],
+  ["2039843", "IF or 或", [
+    ["or.cpp", "|| 表示至少一個條件成立。左側已成立時，右側不會被求值。"]
+  ]],
+  ["2039846", "IF 巢狀條件", [
+    ["nestedCondition.cpp", "先判斷外層，再依需要進入內層。用大括號讓 else 的歸屬清楚。"]
+  ]],
+  ["2039848", "IF 數字範圍判斷", [
+    ["range.cpp", "把閉區間拆成 lo <= x && x <= hi，並分別測試上下界。"]
+  ]],
+  ["2039849", "IF if-else-if", [
+    ["ifelseif.cpp", "依順序檢查多個條件。第一個成立的分支執行後就略過後面的分支。"]
+  ]],
+  ["2040757", "隨機取亂數", [
+    ["random.cpp", "把 rand() 的結果映射到所需範圍。初學猜數字可用 rand() % 100 得到 0–99，同一局固定答案，種子在開頭設定一次。"]
+  ]],
+  ["2040759", "while 迴圈", [
+    ["whileLoop.cpp", "先測試條件再執行本體。確認變數會更新到讓條件不成立。"]
+  ]],
+  ["2040762", "四則運算", [
+    ["arith1.cpp", "先檢查數值型別和除數。兩邊都是整數時，除法會把小數部分截去。"]
+  ]],
+  ["2040763", "四則運算語法簡化版", [
+    ["arith2.cpp", "x += y 可以把加法的結果直接存回 x。閱讀這類寫法時先記下 x 的舊值。"]
+  ]],
+  ["2040771", "加一 · 第一份範例", [
+    ["addby1.cpp", "追蹤加一前後的變數值。單獨寫 x++ 或 ++x 都會把 x 增加 1。"]
+  ]],
+  ["2040772", "加一 · 第二份範例", [
+    ["addby12.cpp", "如果遞增被用在更大的運算式，x++ 取舊值，++x 取更新後的值。初學可把遞增拆成一行。"]
+  ]],
+  ["2040775", "多個輸入輸出", [
+    ["multipleinputs.cpp", "格式字串可指定多個欄位。scanf 要檢查成功讀取的項目數，並逐一對應參數。"]
+  ]],
+  ["2043706", "20260929 · 輸出格式與迴圈", [
+    ["EscapeChar.cpp", "辨認換行 \\n、定位字元 \\t、反斜線與引號跳脫。\\a 或 \\b 的效果也取決於終端機。"],
+    ["alignDisplay.cpp", "在格式中指定最小欄寬，例如 %4d。加入減號的 %-4d 代表左對齊，數字超過欄寬時仍會完整顯示。"],
+    ["break.cpp", "break 跳出最內層的迴圈或 switch。"],
+    ["continue.cpp", "continue 略過這一輪後面的指令。for 接著做更新，while 接著檢查條件。"],
+    ["doWhile.cpp", "先執行一次，再決定是否重複。結尾的 while (條件); 要加分號。"],
+    ["for迴圈.cpp", "把初值、條件和每輪更新寫在同一個 for 標頭。"],
+    ["newline.cpp", "想清楚何時才換行。多欄輸出常在每一列印完後才輸出換行。"],
+    ["while迴圈.cpp", "先測條件再進入本體，所以條件一開始不成立時執行零次。"]
+  ]],
+  ["2046709", "20261005 · 條件式、switch、數值型別", [
+    ["inlineCondition.cpp", "用 條件 ? 真值 : 假值 選出一個值。較長的分支用 if 較好讀。"],
+    ["switch.cpp", "用固定的 case 值分派動作。檢查 break 與未命中時的 default。"],
+    ["switchRange.cpp", "課堂範例使用 case 6 ... 14 這類編譯器擴充。寫標準 C/C++ 時可先將數值分級，switch 再處理級別。"],
+    ["variableRangeIntFloat.cpp", "分清楚整數可表示的範圍、浮點數有效位數，以及 printf 顯示的小數位數。"]
+  ]],
+  ["2047581", "20261006 · 巢狀迴圈、字元與進位", [
+    ["99(1).cpp", "內外兩個迴圈各跑 1–9，先確認每一列的索引配對，再把配對改為乘積。"],
+    ["Char.cpp", "單引號表示字元，雙引號表示字串；%c 可用來印一個字元。"],
+    ["HexOctal.cpp", "0x 開頭表示十六進位，前導 0 的整數常值是八進位。%x、%o 可改變輸出表示。"],
+    ["Square.cpp", "外圈控制列數，內圈控制每列星號數。每列完成才換行。"],
+    ["longShortInt.cpp", "short、int、long 的實際大小依平台。要核對範圍，用對應的 limits 巨集和輸出格式。"]
+  ]],
+  ["2050116", "20261012 · 轉型與質數", [
+    ["castingProblem.cpp", "整數相除前把一個運算元轉成 double，才能保留小數。用 %f 輸出 double。"],
+    ["isPrime.cpp", "先排除小於 2 的值，再測試能否被其他正整數整除。"],
+    ["isPrimeSqrt.cpp", "因數成對出現，檢查到平方根就夠。上界要包含平方根，否則會漏掉完全平方數。"],
+    ["sqrt.cpp", "sqrt 求非負實數的平方根。C 以 math.h 宣告，C++ 可用 <cmath> 的 std::sqrt。"]
+  ]],
+  ["2050970", "20261013 · 跳轉、次方與取整", [
+    ["goto.cpp", "讀到 goto 時，找出同一函式中的標籤，接著從該標籤往下追蹤。"],
+    ["pow.cpp", "pow 做浮點次方。題目要小範圍的整數次方時，可以用逐次整數相乘控制精度。"],
+    ["roundFloorCeil.cpp", "round 四捨五入且剛好一半時遠離零。floor 朝負無限大，ceil 朝正無限大。"]
+  ]],
+  ["2053747", "20261019 · 一維陣列", [
+    ["array(1).cpp", "先宣告三格，依索引 0、1、2 個別寫入，再依索引讀出。"],
+    ["array_init.exe", "iClass 列為 Windows 可執行檔。原檔入口收在本筆教材；同主題可先用陣列初始化範例練習。"]
+  ]],
+  ["2054494", "20261020 · 二維陣列", [
+    ["2d_array.cpp", "二維陣列以 a[row][col] 表示一格，列和欄的索引都從 0 開始。"],
+    ["2d_array_fill_example.cpp", "單一迴圈把線性索引 k 換成列 k / 欄數與欄 k % 欄數。"],
+    ["2d_array_fill_example0.cpp", "使用列、欄兩層迴圈，依序填值並逐列印出。"],
+    ["2d_array_init.cpp", "可以用一組大括號表示一列。剩餘元素會以 0 初始化。"],
+    ["2d_array_show.cpp", "先決定走訪次序；常見做法是外圈跑列，內圈跑欄，印完一列再換行。"]
+  ]],
+  ["2060675", "20261103 · 多筆輸入、字串與計數", [
+    ["count.cpp", "用陣列記錄每個字元出現幾次；做一般位元組索引前可轉成 unsigned char。"],
+    ["multiple_EOF.cpp", "輸入筆數未知時可用 while (scanf(\"%d\", &n) == 1)。遇到非數字或輸入結束就離開。"],
+    ["multipleinputs(1).cpp", "先讀筆數 N，再依 N 逐筆讀取一組資料。每輪檢查是否讀到完整欄位。"],
+    ["strlen.cpp", "strlen 計算終止字元 \\0 之前的位元組數，回傳 size_t。讀字串要限定緩衝區可容納的長度。"]
+  ]]
+];
+
+const classHomework = [
+  {
+    title: "第 1 週 · 安裝開發環境", id: "2034310",
+    items: [
+      ["準備編譯器", "Windows 安裝 Dev-C++，其他系統可用 GCC 或同類編譯器。課堂作業要求繳安裝完成的截圖。", "用一支只印一行文字的程式確認能編譯、能執行，再依原作業說明截圖。"]
+    ]
+  },
+  {
+    title: "第 2 週 · 猜亂數", id: "2040170",
+    items: [
+      ["猜到為止", "先產生一個 0 到 99 的整數。反覆讀取猜測，答對時提示並結束，猜錯就再讀一次。課堂要求程式檔與執行截圖。", "亂數只產生一次。把讀取、比對、成功退出放在迴圈內，測試第一輪猜中和多輪猜中。"]
+    ]
+  },
+  {
+    title: "第 3 週 · 迴圈、輸出與 switch", id: "2043177",
+    items: [
+      ["列出 1 到 100", "依序顯示從 1 到 100 的所有整數。", "從 1 初始化，條件包含 100，每輪增加 1。"],
+      ["略過 3 的倍數", "維持 1 到 100 的順序，排除能被 3 整除的數。", "用 i % 3 測餘數。若使用 while 和 continue，先確保略過時仍有更新。"],
+      ["除法四捨五入到兩位", "讀入 a、b，顯示 a ÷ b 至小數點後第二位。", "選能保留小數的運算，確認 b 不為零，再格式化輸出兩位。"],
+      ["販賣機分級（公告可免交）", "用 switch 處理投入金額。至多 5 元時無輸出，6–14 元顯示 Yogert（原題拼法），15–25 元顯示 Black Tea，26 元以上顯示 All。", "測 5、6、14、15、25、26。課堂有編譯器擴充的 case 範圍示範。寫標準 C/C++ 時可先求分級，再對級別使用 switch。"]
+    ]
+  },
+  {
+    title: "第 4 週 · 數字範圍與乘法表", id: "2047379",
+    items: [
+      ["顯示超過 60 億的整數", "在 32 位元程式中正確表示並輸出大於 60 億的整數。", "用 long long 或 int64_t。確認常值寫法和輸出格式與型別相符。"],
+      ["顯示很小的小數", "示範能印出小數第六位以後仍有意義的數值。", "用 double 避免有效位數太少，再用 %.nf 指定小數位。把 n 換成要顯示的位數，並分清顯示格式和實際精度。"],
+      ["九九乘法表", "用兩層迴圈列出 1 至 9 的乘法表。", "外圈選第一個數，內圈選第二個數並印乘積。一列結束才換行。"]
+    ]
+  },
+  {
+    title: "第 5 週 · 質數、除法與公因數", id: "2050452", quiz: "2053666",
+    items: [
+      ["用平方根判斷質數", "輸入一個整數，依平方根決定要試到哪個因數。", "先排除小於 2 的值，再從 2 測到平方根，包含剛好等於平方根的情形。"],
+      ["質因數分解", "讀入一個數值，將它拆成質因數相乘，重複因數要分別顯示。", "從 2 起試除，同一個因數能整除就繼續除。檢查完後若餘下的值大於 1，它也是一個因數。"],
+      ["兩個 int 相除保留小數", "輸入整數 a、b，b 不可為零，輸出帶小數的商。", "先檢查 b，再用 (double)a / b。用 1 和 2 測輸出是否保留 0.5。"],
+      ["最大公因數與最小公倍數", "讀入兩個正整數，求出 GCD 與 LCM。", "用輾轉相除法更新 (a, b) 為 (b, a % b)，直到第二個數為 0。保留原值，再算 原 a / GCD × 原 b。"]
+    ]
+  },
+  {
+    title: "第 6 週 · 拆位、質因數與累加", id: "2054108",
+    items: [
+      ["圓面積", "輸入半徑，計算並顯示圓的面積。", "用 double 表示半徑與 π，面積為 π × r × r。"],
+      ["五位數回文", "判斷一個五位正整數從左讀與從右讀是否相同。", "可以逐位反轉再和原數比較，也可只比較最外兩組數字。"],
+      ["分解不大於 1000 的正整數", "列出質因數乘積，範圍限正整數 1 到 1000。", "試除時保留原始輸入以便輸出。1 沒有質因數，顯示方式依原課要求。"],
+      ["while 反轉整數各位", "用 while 逐位反轉並輸出整數。", "每輪從原值取末位，令結果乘 10 再加該位。自行測 0、尾端有 0 與負數。原題頁以正數示例。"],
+      ["階乘和", "輸入不大於 10 的 n，計算 1! 到 n! 的總和。", "一個變數累積階乘，另一個變數加上每輪的階乘。不必在每一輪從 1 重算。"]
+    ]
+  },
+  {
+    title: "第 7 週 · 三角圖形與菱形", id: "2056977",
+    items: [
+      ["分別輸出四種三角圖形", "輸入 1–10 的邊長。四個圖形依序是左對齊遞增、左對齊遞減、右對齊遞增、右對齊遞減，須分別顯示。", "以 0 為首列索引。遞增印 row + 1 個星號，遞減印 n - row 個；右對齊時先補 n - 星號數 個空格。"],
+      ["奇數寬度的菱形", "輸入為奇數時，印出對稱的星號菱形。原頁用寬度 5 示範。", "令中列索引為 n / 2。每列先算到中列的距離 d，印 d 個空格和 n - 2d 個星號。"]
+    ]
+  }
+];
+
+const classExercises = [
+  {
+    title: "10/12 課堂練習 · 質數", anchor: "prime",
+    items: [
+      ["基礎質數判斷", "寫程式辨認一個數是否為質數。", "先定義小於 2 的結果。測試 2、4、9 和 11。"],
+      ["用開根號縮小搜尋", "研究如何在程式求平方根，並用結果改良質數判斷。", "若 n 有一對非平凡因數，較小者不大於 √n。用 49 驗證上界有包含 7。"]
+    ]
+  },
+  {
+    title: "11/3 實習練習 · 五道綜合題", anchor: "nov03",
+    items: [
+      ["位數次方和", "讀入正整數，將每一位提高到總位數次方後相加。與原值相等時輸出 Yes，否則輸出 No。", "先數位數，再用另一份原值逐位取出。小範圍可用整數重複相乘，並留意總和的型別。"],
+      ["三邊辨認三角形", "輸入已排序的三個正整數邊長。先判斷能否成三角形，再用兩短邊平方和與最長邊平方的比較區分鈍角、直角與銳角。", "a + b 必須大於 c。通過後才比較 a² + b² 與 c²，注意乘法前的型別。"],
+      ["比對彩券號碼", "讀入兩組各六個、不在組內重複的 1–49 整數。依交集個數查獎金。3、4、5、6 個對應 400、2000、50000、1000000，其餘為 0。", "掃描每個自選號，找到對應開獎號就計一次並離開內圈，再依命中數輸出。"],
+      ["BMI 截到一位小數", "讀入身高（公分）與體重（公斤）。身高換成公尺後，以體重除以身高平方，結果截斷至小數點後一位。", "先算數值，再截斷。單用 %.1f 會四捨五入，輸出之前要先處理截斷。"],
+      ["階梯折扣與總價", "輸入單價、冊數、折扣比例與起折冊次。從指定冊次起才套用折扣。最後把總價四捨五入成整數。", "原價冊數最多是實際購買量，折扣冊數不能是負數。先分開算兩段的金額，最後再取整。"]
+    ]
+  }
+];
+
+const classReadingExamples = [
+  ["format-output", "輸出格式與跳脫字元", "09/29 教材 · 左欄使用 %-8s，右欄使用 %4d，列尾用換行。\\t 是定位字元，對齊表格時欄寬通常更可預測。", String.raw`#include <cstdio>
+
+int main() {
+    std::printf("%-8s %4s\n", "Item", "Qty");
+    std::printf("%-8s %4d\n", "pen", 7);
+    std::printf("%-8s %4d\n", "paper", 24);
+    std::puts("Quoted: \"Qty\"");
+}`],
+  ["random-guess", "猜數字的迴圈", "第 2 週主題 · 這支示例使用 0 到 9。啟動時取一次答案，猜錯再讀。輸入結束時也會離開迴圈。", String.raw`#include <cstdlib>
+#include <ctime>
+#include <iostream>
+
+int main() {
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    const int answer = std::rand() % 10;
+    int guess;
+    while (std::cin >> guess) {
+        if (guess == answer) {
+            std::cout << "correct\n";
+            return 0;
+        }
+        std::cout << "try again\n";
+    }
+}`],
+  ["math-functions", "平方根、次方與取整", "10/12、10/13 教材 · 用 -2.5 比較 round、floor、ceil，觀察小於零時三種方向。", String.raw`#include <cmath>
+#include <iostream>
+
+int main() {
+    std::cout << std::sqrt(36.0) << ' ' << std::pow(3.0, 2.0) << '\n';
+    const double x = -2.5;
+    std::cout << std::round(x) << ' ' << std::floor(x) << ' ' << std::ceil(x) << '\n';
+}`],
+  ["array-grid", "二維陣列與線性索引", "10/20 教材 · 共 2 列 3 欄，用 k / 3 和 k % 3 找到每個位置，再按列輸出。", String.raw`#include <iostream>
+
+int main() {
+    constexpr int rows = 2;
+    constexpr int cols = 3;
+    int values[rows][cols] = {};
+    for (int k = 0; k < rows * cols; ++k) {
+        values[k / cols][k % cols] = 10 + k;
+    }
+    for (const auto& row : values) {
+        for (int col = 0; col < cols; ++col) {
+            if (col > 0) std::cout << ' ';
+            std::cout << row[col];
+        }
+        std::cout << '\n';
+    }
+}`],
+  ["known-input-count", "已知資料筆數時逐組讀取", "11/3 教材 · 先讀 n，再讀 n 組數字。每輪要成功讀到兩個值才輸出。範例輸入 2 3 4 8 9 時，逐行輸出 7、17。", String.raw`#include <iostream>
+
+int main() {
+    int n;
+    if (!(std::cin >> n) || n < 0) return 1;
+    for (int i = 0; i < n; ++i) {
+        int left, right;
+        if (!(std::cin >> left >> right)) return 1;
+        std::cout << static_cast<long long>(left) + right << '\n';
+    }
+}`],
+  ["until-eof", "讀到輸入結束", "11/3 教材 · 以 scanf 的回傳值檢查每筆資料。每讀到一個整數就印一行，輸入結束或碰到非整數時停止。", String.raw`#include <cstdio>
+
+int main() {
+    int value;
+    while (std::scanf("%d", &value) == 1) {
+        std::printf("[%d]\n", value);
+    }
+}`],
+  ["string-count", "字串長度與英文字母計數", "11/3 教材 · 讀一個最多 15 位元組的詞，再統計其中小寫 a 的次數。輸入 banana 會印出長度 6、出現 3 次。", String.raw`#include <cstdio>
+#include <cstring>
+
+int main() {
+    char word[16];
+    if (std::scanf("%15s", word) != 1) return 1;
+    const std::size_t length = std::strlen(word);
+    std::size_t occurrences = 0;
+    for (std::size_t i = 0; i < length; ++i) {
+        if (word[i] == 'a') ++occurrences;
+    }
+    std::printf("%zu %zu\n", length, occurrences);
+}`]
+];
+
 const lessons = [
   {
     title: "第一支 C 程式",
@@ -843,6 +1188,79 @@ function disclosure(label, ...children) {
   return details;
 }
 
+function courseLink(label, path) {
+  const link = element("a", label);
+  link.href = courseBase + path;
+  return link;
+}
+
+function renderClassLibrary() {
+  const materials = document.getElementById("material-library");
+  const materialRows = classMaterials.map(([id, title, files]) => {
+    const list = element("ul", undefined, "material-list");
+    for (const [filename, note] of files) {
+      const item = element("li");
+      item.append(element("code", filename), element("p", note));
+      list.append(item);
+    }
+    const source = element("p");
+    source.append(courseLink("原始教材與附件（iClass）", "learning-activity#/" + id));
+    const details = disclosure(title + " · " + files.length + " 個附件", source, list);
+    details.className = "material-group";
+    details.id = "material-" + id;
+    materials.append(details);
+    return details;
+  });
+  const filter = document.getElementById("material-filter");
+  const count = document.getElementById("material-count");
+  function updateMatches() {
+    const query = filter.value.trim().toLocaleLowerCase();
+    let visible = 0;
+    for (const details of materialRows) {
+      details.hidden = !details.textContent.toLocaleLowerCase().includes(query);
+      if (!details.hidden) visible++;
+    }
+    count.textContent = query ? "找到 " + visible + " 筆教材" : "共 " + visible + " 筆教材";
+  }
+  filter.addEventListener("input", updateMatches);
+  updateMatches();
+
+  const examples = document.getElementById("class-example-library");
+  for (const [file, title, description, source] of classReadingExamples) {
+    examples.append(disclosure(title, element("p", description), codeBlock(source),
+      button("下載 .cpp", () => fileDownload(file + ".cpp", source + "\n"))));
+  }
+
+  const homework = document.getElementById("homework-library");
+  for (const group of classHomework) {
+    const sources = [courseLink("查看 iClass 作業原文", "learning-activity#/" + group.id)];
+    if (group.quiz) {
+      sources.push(courseLink("查看 10/19 小考原文", "learning-activity#/" + group.quiz));
+    }
+    homework.append(renderClassQuestions(group, "homework-" + group.id, sources));
+  }
+  const exercises = document.getElementById("class-exercise-library");
+  for (const group of classExercises) {
+    exercises.append(renderClassQuestions(group, "class-exercises-" + group.anchor,
+      [courseLink("查看 iClass 公告原文", "bulletin")]));
+  }
+}
+
+function renderClassQuestions(group, id, sources) {
+  const list = element("ol", undefined, "homework-list");
+  for (const [title, prompt, hint] of group.items) {
+    const item = element("li");
+    item.append(element("strong", title), element("p", prompt), disclosure("顯示解題提示", element("p", hint)));
+    list.append(item);
+  }
+  const links = element("p", undefined, "actions");
+  links.append(...sources);
+  const details = disclosure(group.title + " · " + group.items.length + " 項", links, list);
+  details.id = id;
+  details.className = "homework-group";
+  return details;
+}
+
 function button(label, action) {
   const control = element("button", label);
   control.type = "button";
@@ -1057,6 +1475,7 @@ const tasksList = document.getElementById("tasks");
 for (const [index, task] of tasks.entries()) tasksList.append(renderTask(task, index + 1, "practice"));
 const courseTasksList = document.getElementById("course-tasks");
 for (const [index, task] of courseTasks.entries()) courseTasksList.append(renderTask(task, index + 1, "course"));
+renderClassLibrary();
 const cppLink = document.querySelector('a[href="#cpp"]');
 const cppDetails = document.getElementById("cpp");
 cppLink.addEventListener("click", () => { cppDetails.open = true; });
@@ -1104,7 +1523,11 @@ showThemeButton();
 addEventListener("hashchange", markCurrentLocation);
 markCurrentLocation();
 updateProgress();
-if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+if (location.hash) {
+  const target = document.getElementById(location.hash.slice(1));
+  if (target instanceof HTMLDetailsElement) target.open = true;
+  target?.scrollIntoView();
+}
 </script>
 </body>
 </html>
