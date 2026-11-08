@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="從第一支 C 程式到陣列。用繁體中文讀程式、追蹤變數，再動手做十四題實作。">
+<title>程式語言（一）｜C 語言練習室</title>
+<style>
+:root{color-scheme:light;--paper:#f5f4ee;--card:#fffdf8;--ink:#202823;--muted:#515c53;--rule:#d7dad0;--green:#1a543c;--tint:#e3eee4;--dark:#172b24;--code:#ebf4ee;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-padding-top:1rem}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif}
+a{color:var(--green);text-underline-offset:.2em}
+button,textarea{font:inherit}
+button{cursor:pointer;color:var(--green);background:var(--card);border:1px solid var(--green);border-radius:.4rem;padding:.38rem .75rem}
+button:disabled{opacity:.5;cursor:default}
+:focus-visible{outline:3px solid #a65621;outline-offset:4px}
+code,pre{font-family:var(--mono);font-size:.92em}
+p,ul,ol{margin:.55rem 0 1rem}
+h1,h2,h3{margin:0;line-height:1.2;letter-spacing:-.035em}
+h1{font-size:clamp(2.7rem,6vw,5.1rem)}
+h2{font-size:clamp(1.65rem,3vw,2.55rem)}
+h3{font-size:1.15rem}
+.wrap{max-width:1240px;margin:auto;padding-inline:clamp(1rem,4vw,3rem)}
+header{background:var(--dark);color:#f4f6ec}
+.top{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding-block:1rem;border-bottom:1px solid #537061;font-weight:650}
+.top a{color:#d6efdf}
+.hero{padding-block:clamp(2.3rem,7vw,5rem);display:grid;grid-template-columns:minmax(0,1.6fr) minmax(15rem,1fr);align-items:end;gap:clamp(1.1rem,4vw,4rem)}
+.hero p{max-width:35rem;color:#d1e1d6;margin-bottom:0}
+.eyebrow{font:700 .85rem/1.5 var(--mono);letter-spacing:.05em;color:var(--green);margin:0 0 .75rem}
+.hero .eyebrow{color:#aad1b9}
+.hero-aside{border-left:1px solid #537061;padding-left:1.2rem}
+.hero-aside ol{padding-left:1.4rem;margin:0;color:#e4efe7}
+.cta{display:inline-block;margin-top:1.3rem;padding:.48rem .85rem;border-radius:.4rem;background:#d6efdf;color:var(--dark);font-weight:750;text-decoration:none}
+.layout{display:grid;grid-template-columns:15rem minmax(0,1fr);gap:clamp(1rem,4vw,3rem);padding-block:2rem 4rem}
+nav{position:sticky;top:1rem;align-self:start;max-height:calc(100vh - 2rem);overflow:auto}
+nav ol{list-style:none;margin:0;padding:0}
+nav a{display:block;padding:.37rem .5rem;color:var(--ink);text-decoration:none;border-radius:.35rem}
+nav a:hover,nav a[aria-current="location"]{background:var(--tint);color:var(--green)}
+nav a span{font-family:var(--mono);margin-right:.55rem;color:var(--green)}
+.progress{color:var(--muted);font-size:.9rem;margin:.9rem .5rem 0}
+.intro,.lesson,.practice,.source{background:var(--card);border:1px solid var(--rule);border-radius:.65rem;padding:clamp(1rem,3vw,2rem);margin-bottom:1.15rem;min-width:0}
+.intro p:last-child,.source p:last-child{margin-bottom:0}
+.lesson-head{padding-bottom:.85rem;border-bottom:1px solid var(--rule);margin-bottom:1rem}
+.lead{font-size:1.06rem}
+.lab{border:1px solid var(--rule);border-radius:.5rem;overflow:hidden;margin:1.1rem 0}
+.lab-title{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.6rem .85rem;background:var(--tint);color:var(--green)}
+.lab-title span{font:600 .82rem/1.4 var(--mono)}
+pre{margin:0;overflow:auto;background:var(--dark);color:var(--code);padding:.85rem;tab-size:4;line-height:1.55}
+pre.trace-code{padding:0}
+.trace-code code{font-size:inherit}
+.line{display:block;padding:0 .75rem;min-height:1.55em;border-left:4px solid transparent}
+.line:first-child{padding-top:.6rem}
+.line:last-child{padding-bottom:.6rem}
+.line.active{background:#315343;border-color:#acd8a9}
+.ln{display:inline-block;color:#b2c5b9;width:2.2em;user-select:none}
+.lab-controls,.actions{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem}
+.trace-body{padding:.85rem}
+.trace-note{margin:.6rem 0 0;min-height:3.5em}
+.trace-output{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.65rem}
+.trace-output div{background:var(--paper);border:1px solid var(--rule);padding:.5rem .65rem;min-width:0;border-radius:.35rem}
+.trace-output strong,.trace-output code{display:block}
+.trace-output code{white-space:pre-wrap;overflow-wrap:anywhere}
+.check{padding:.9rem;border-left:4px solid var(--green);background:var(--tint);margin:1rem 0}
+.check p{margin:.35rem 0 .5rem}
+label{display:block;font-weight:650}
+textarea{display:block;width:100%;padding:.55rem .65rem;border:1px solid #889a8b;border-radius:.35rem;background:var(--card);color:var(--ink);font-family:var(--mono);resize:vertical;margin:.3rem 0 .65rem}
+.feedback{min-height:1.6em;margin:0;font-weight:650;color:var(--green)}
+details{margin:.6rem 0}
+summary{cursor:pointer;color:var(--green);font-weight:700}
+details pre{margin:.65rem 0;border-radius:.35rem}
+.task{border-top:1px solid var(--rule);padding:1.2rem 0 .4rem}
+.task-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.task-grid strong{display:block}
+.task-grid pre{border-radius:.35rem;margin:.25rem 0}
+.badge{font-size:.85rem;font-weight:650;color:var(--green)}
+.skip{position:absolute;top:0;left:1rem;transform:translateY(-110%);background:var(--card);padding:.5rem;z-index:1}
+.skip:focus{transform:none}
+footer{color:var(--muted);font-size:.9rem}
+@media(max-width:850px){.layout{grid-template-columns:minmax(0,1fr)}nav{position:static;max-height:none}nav ol{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))}}
+@media(max-width:620px){.hero{grid-template-columns:1fr}.top{font-size:.85rem}.trace-output{grid-template-columns:1fr}.lab-title{align-items:start}}
+@media print{header{background:white;color:#202823}.hero p,.hero .eyebrow,.hero-aside ol,.top a{color:#202823}.layout{display:block}nav,button,textarea,.cta{display:none}pre{white-space:pre-wrap;background:white;color:black;border:1px solid #888}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到教材</a>
+<header>
+  <div class="wrap">
+    <div class="top"><span>程式語言（一）</span><a href="#sources">課程對照與來源</a></div>
+    <div class="hero">
+      <div>
+        <p class="eyebrow">PROGRAMMING I</p>
+        <h1>C 語言練習室</h1>
+        <p>從第一支程式寫到陣列。先猜輸出，逐步追蹤程式執行，再把同一個觀念用到新題目。</p>
+        <a class="cta" href="#lesson-1">開始第一課 ↓</a>
+      </div>
+      <div class="hero-aside">
+        <p class="eyebrow">每一課怎麼用</p>
+        <ol><li>讀懂觀念與常見錯誤</li><li>操作範例，看變數怎麼變</li><li>獨立作答，再展開解析</li></ol>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="wrap layout">
+  <nav aria-label="學習單元">
+    <p class="eyebrow">學習路線</p>
+    <ol id="nav">
+      <li><a href="#practice"><span>練習</span>八題基礎實作</a></li>
+      <li><a href="#course-practice"><span>導練</span>六題課內同型題</a></li>
+      <li><a href="#sources"><span>來源</span>教材對照</a></li>
+    </ol>
+    <p class="progress" id="progress" aria-live="polite"></p>
+  </nav>
+  <main id="main">
+    <section class="intro">
+      <h2>從讀懂一行，到自己寫一題</h2>
+      <p>前七課依淡江「程式語言（一）」B 班公開教學計畫的期中前主題排列，搭配 iClass 教材和實習題型。正文用 C17 示範，另附 <a href="#cpp">C++ 輸入輸出對照</a>。每節的程式、追蹤與題目均為自編。</p>
+      <p>有編譯器時，可將完整範例存成 <code>main.c</code>，執行 <code>cc -std=c17 -Wall -Wextra main.c -o main</code>，再執行 <code>./main</code>。頁面裡的步進器示範的是固定範例。手寫題可以在自己的編譯器執行，再對照範例輸出。</p>
+    </section>
+    <noscript><p>請啟用 JavaScript 以顯示教材與操作練習。</p></noscript>
+    <div id="lessons"></div>
+    <section class="practice" id="practice">
+      <p class="eyebrow">獨立實作</p>
+      <h2>八題基礎實作</h2>
+      <p>每題各寫一個 <code>.c</code> 檔。先跑範例輸入，再試邊界值；提示與參考解法可分開展開。草稿儲存在目前瀏覽器。這八題是本站自編練習。</p>
+      <div id="tasks"></div>
+    </section>
+    <section class="practice" id="course-practice">
+      <p class="eyebrow">iClass 題型導練</p>
+      <h2>六題課內同型題</h2>
+      <p>用課內練過的觀念解新題。每題列出對應的課堂練習或作業，可以先獨立寫，再開提示。</p>
+      <div id="course-tasks"></div>
+    </section>
+    <section class="source" id="sources">
+      <h2>課程對照與來源</h2>
+      <ul>
+        <li><a href="https://webp1.emis.tku.edu.tw/115_1/115_1_0635.PDF">淡江大學 115 學年度第 1 學期 B 班教學計畫</a>，第 2–3 頁列有每週主題與參考用書。本站七課依第 1–7 週主題排列，實際上課進度與考試範圍依課程公告。</li>
+        <li>2026/11/08 核對 iClass B 班的<a href="https://iclass.tku.edu.tw/course/263868/courseware">教材清單</a>、<a href="https://iclass.tku.edu.tw/course/263868/homework">第 3、6、7 週作業</a>及<a href="https://iclass.tku.edu.tw/course/263868/bulletin">10/12 課堂練習與 11/3 實習練習</a>（需校方帳號登入）。同型題以自編題意、數值與程式呈現。</li>
+      </ul>
+      <p>教學計畫的下半學期另列函式、遞迴、指標、字串、參數傳遞與記憶體配置；這一版先涵蓋期中複習前的基礎。</p>
+      <details id="cpp">
+        <summary>C 與 C++ 的輸入輸出對照</summary>
+        <p>iClass 的 Hello World 範例以 <code>.cpp</code> 提供。下方用一支自編程式對照兩種寫法。C 的 <code>scanf</code> 透過位址寫入變數，C++ 的 <code>std::cin</code> 直接接收變數，用串流狀態檢查讀取是否成功。</p>
+        <pre><code>#include &lt;iostream&gt;
+
+int main() {
+    int n;
+    if (!(std::cin &gt;&gt; n)) return 1;
+    std::cout &lt;&lt; n &lt;&lt; '\n';
+    return 0;
+}</code></pre>
+        <p>把此例另存成 <code>main.cpp</code>，使用 <code>c++ -std=c++17 -Wall -Wextra main.cpp -o main</code> 編譯。這七課示範的條件、迴圈和陣列基本概念同樣適用。</p>
+      </details>
+    </section>
+  <footer>公開自學教材 · 範例與練習使用原創內容 · 學習進度僅保存在這個瀏覽器</footer>
+  </main>
+</div>
+<script>
+"use strict";
+const lessons = [
+  {
+    title: "第一支 C 程式",
+    tag: "第 1 週 · 基本結構與輸出",
+    goal: "認得 main、標頭檔與輸出指令，分清楚原始碼和執行結果。",
+    notes: [
+      "程式從 main 開始。stdio.h 宣告 printf 等標準輸入輸出函式。",
+      "printf 的第一個參數描述輸出內容。%d 會替換成後面對應的 int，\\n 會換行。",
+      "return 0 結束 main，表示程式正常結束。大括號包住區塊，多數敘述以分號結束。"
+    ],
+    pitfall: "字串要用雙引號。printf(\"n\") 輸出字母 n，printf(\"%d\", n) 才輸出 n 的數值。",
+    code: String.raw`#include <stdio.h>
+
+int main(void) {
+    int n = 6;
+    printf("n = %d\n", n);
+    return 0;
+}`,
+    steps: [[3,"從 main 開始執行。","—",""],[4,"宣告 n，給它初始值 6。","n = 6",""],[5,"把 %d 替換成 n 的值，最後換行。","n = 6","n = 6"],[6,"正常結束。","n = 6","n = 6"]],
+    question: "如果把第 4 行改成 int n = 12;，會印出哪一行？",
+    answer: "n = 12",
+    why: "輸出格式的前綴 n = 固定不變，%d 取用新的 n 值 12。"
+  },
+  {
+    title: "型別、運算式與輸入",
+    tag: "第 2 週 · int、double、scanf",
+    goal: "預測整數除法和餘數，並用正確格式讀取數字。",
+    notes: [
+      "int / int 的結果仍是整數，小數部分向零截去。要保留小數，可以先把其中一個運算元轉成 double。",
+      "% 是整數餘數。以正整數為例，17 / 5 得 3，17 % 5 得 2。",
+      "scanf(\"%d\", &n) 嘗試讀入一個 int。&n 告訴 scanf 寫到哪個變數，回傳 1 代表成功讀取一個項目。讀 double 用 %lf。"
+    ],
+    pitfall: "double x = 17 / 5; 會先算出整數 3，再轉成 3.0。先轉型才能保留 3.4。除數也必須有非零保證。",
+    code: String.raw`#include <stdio.h>
+
+int main(void) {
+    int total;
+    if (scanf("%d", &total) != 1) return 1;
+    int groups = total / 5;
+    int left = total % 5;
+    printf("%d %d\n", groups, left);
+    return 0;
+}`,
+    input: "17",
+    steps: [[4,"宣告 total，先不讀取它的值。","total 尚未寫入",""],[5,"讀到 17，scanf 回傳 1，所以繼續。","total = 17",""],[6,"整數除法只留下商。","total = 17；groups = 3",""],[7,"17 除以 5 餘 2。","groups = 3；left = 2",""],[8,"以一個空白分隔商和餘數。","groups = 3；left = 2","3 2"]],
+    question: "改輸入 24，最後一行是什麼？",
+    answer: "4 4",
+    why: "24 = 5 × 4 + 4。第一個數字是商，第二個是餘數。"
+  },
+  {
+    title: "用 if 處理條件",
+    tag: "第 3 週 · if / else if / else",
+    goal: "把分段規則寫成互斥分支，特別檢查剛好等於門檻的情況。",
+    notes: [
+      "if 先檢查第一個條件；失敗才檢查 else if；全部失敗才執行 else。",
+      "&& 表示兩邊都成立，|| 表示至少一邊成立。= 是指派，== 是相等比較。",
+      "門檻題先寫出區間，再測每個門檻的前一個值、門檻本身和後一個值。"
+    ],
+    pitfall: "若先判斷 score >= 60，90 分也會被第一個分支接走。需要不同標籤時，把較嚴格的條件放前面。",
+    code: String.raw`#include <stdio.h>
+
+int main(void) {
+    int score = 79;
+    if (score >= 80) {
+        puts("high");
+    } else if (score >= 60) {
+        puts("pass");
+    } else {
+        puts("retry");
+    }
+    return 0;
+}`,
+    steps: [[4,"初始化分數。","score = 79",""],[5,"79 >= 80 為假，略過第一段。","score = 79",""],[7,"79 >= 60 為真，執行第二段。","score = 79",""],[8,"puts 印出文字並換行，後面的 else 略過。","score = 79","pass"]],
+    question: "改成 score = 80，輸出是什麼？",
+    answer: "high",
+    why: ">= 包含等於。第一個分支成立後，第二個分支不會再執行。"
+  },
+  {
+    title: "用 switch 處理選單",
+    tag: "第 4 週 · case / break / default",
+    goal: "用固定的整數或字元選項分派行為，知道何時會落入下一個 case。",
+    notes: [
+      "switch 的運算式在這裡用整數。case 的值在編譯時就要確定。",
+      "比對成功後會從對應 case 開始執行。break 跳出 switch；沒有 break 時，會接著執行後續敘述。",
+      "default 可接住未列出的值。連續寫 case 2: 和 case 3: 可以讓兩個值共用同一段。"
+    ],
+    pitfall: "用 case 處理固定選項，用 if 處理區間。寫完選單時，記得測未列出的選項。",
+    code: String.raw`#include <stdio.h>
+
+int main(void) {
+    int mode = 2;
+    switch (mode) {
+        case 1: puts("add"); break;
+        case 2: puts("list"); break;
+        default: puts("unknown"); break;
+    }
+    return 0;
+}`,
+    steps: [[4,"設定選項 2。","mode = 2",""],[5,"switch 比對 mode 的值。","mode = 2",""],[7,"命中 case 2，輸出 list，再以 break 跳出。","mode = 2","list"],[10,"程式正常結束。","mode = 2","list"]],
+    question: "維持 mode = 2，刪掉第 7 行的 break;，依序輸出哪兩行？",
+    answer: "list\nunknown",
+    why: "先執行 case 2，接著落入下一段 default。default 的 break 才跳出 switch。"
+  },
+  {
+    title: "用 while 與 do while 重複",
+    tag: "第 5 週 · 迴圈條件與累加",
+    goal: "分清楚條件檢查時機，寫出會停止的累加迴圈。",
+    notes: [
+      "while 先檢查條件，條件一開始為假時，迴圈本體執行零次。",
+      "do while 先執行本體再檢查條件，因此至少一次。末尾的 while (條件); 需要分號。",
+      "累加通常有三件事：初始化總和、加入當前值、更新迴圈變數。"
+    ],
+    pitfall: "漏掉 ++i 可能讓條件一直成立。若要包含上限 3，使用 i <= 3。",
+    code: String.raw`#include <stdio.h>
+
+int main(void) {
+    int i = 1, sum = 0;
+    while (i <= 3) {
+        sum += i;
+        ++i;
+    }
+    printf("%d\n", sum);
+    return 0;
+}`,
+    steps: [[4,"從 i = 1、sum = 0 開始。","i = 1；sum = 0",""],[5,"1 <= 3，進入本體。","i = 1；sum = 0",""],[6,"加入第一個值。","i = 1；sum = 1",""],[7,"更新 i，回到條件檢查。","i = 2；sum = 1",""],[5,"2 <= 3，進入第二輪。","i = 2；sum = 1",""],[6,"加入 2。","i = 2；sum = 3",""],[7,"更新 i。","i = 3；sum = 3",""],[5,"3 <= 3，進入第三輪。","i = 3；sum = 3",""],[6,"加入 3。","i = 3；sum = 6",""],[7,"更新 i。","i = 4；sum = 6",""],[5,"4 <= 3 為假，離開迴圈。","i = 4；sum = 6",""],[9,"印出最後的 sum。","i = 4；sum = 6","6"]],
+    question: "只把條件改成 i < 3，會輸出多少？",
+    answer: "3",
+    why: "本體只在 i = 1 和 i = 2 時執行，總和是 3。"
+  },
+  {
+    title: "提早結束、跳過與標籤",
+    tag: "第 6 週 · break / continue / goto",
+    goal: "分清楚離開整個迴圈、跳過本輪，以及跳到同一函式裡的標籤。",
+    notes: [
+      "break 跳出最內層的迴圈或 switch。巢狀迴圈裡只會離開一層。",
+      "continue 跳過這一輪剩下的內容。while 會回到條件；for 會先做更新式，再檢查條件。",
+      "goto 標籤; 會跳到同一函式中的 標籤:。例如 goto done; 可跳到 done: 下方的收尾敘述。讀到 goto 時，先找到目標再接著追蹤。"
+    ],
+    pitfall: "在 while 裡，如果 continue 之前沒有更新控制變數，同一個值可能一再觸發 continue。",
+    code: String.raw`#include <stdio.h>
+
+int main(void) {
+    int i = 0;
+    while (i < 6) {
+        ++i;
+        if (i == 2) continue;
+        if (i == 4) break;
+        printf("%d\n", i);
+    }
+    return 0;
+}`,
+    steps: [[4,"初始化 i。","i = 0",""],[6,"第一輪把 i 更新為 1。","i = 1",""],[7,"1 不等於 2，繼續往下。","i = 1",""],[8,"1 不等於 4，不跳出。","i = 1",""],[9,"輸出 1。","i = 1","1"],[6,"回到迴圈條件，再把 i 更新為 2。","i = 2","1"],[7,"continue 跳過 printf，回到 while 條件。","i = 2","1"],[6,"條件成立，把 i 更新為 3。","i = 3","1"],[9,"兩個 if 條件都不成立，輸出 3。","i = 3","1\n3"],[6,"回到迴圈條件，再把 i 更新為 4。","i = 4","1\n3"],[8,"break 跳出迴圈，4 沒有被印出。","i = 4","1\n3"]],
+    question: "只把 break 的門檻從 4 改成 5，依序輸出哪些行？",
+    answer: "1\n3\n4",
+    why: "2 仍被 continue 跳過。i 到 5 才 break，因此會多印 4。"
+  },
+  {
+    title: "用陣列處理多筆資料",
+    tag: "第 7 週 · 索引、走訪、最大值",
+    goal: "用索引讀取元素，透過迴圈掃描陣列並避免越界。",
+    notes: [
+      "int values[4] 有四格，索引是 0、1、2、3。values[4] 已超出陣列範圍。",
+      "找最大值時可用第一個元素初始化，再從索引 1 開始比較，這樣所有值為負也能正確處理。",
+      "用 while (i < 長度) 可掃描陣列。for (int i = 0; i < 長度; ++i) 把初始化、條件和更新集中在同一行。"
+    ],
+    pitfall: "若 n 表示實際讀入的筆數，必須確認 0 <= n <= 容量。用第一筆當初值之前，還要保證 n 至少為 1。",
+    code: String.raw`#include <stdio.h>
+
+int main(void) {
+    int values[4] = {-4, -7, -2, -9};
+    int best = values[0];
+    int i = 1;
+    while (i < 4) {
+        if (values[i] > best) best = values[i];
+        ++i;
+    }
+    printf("%d\n", best);
+    return 0;
+}`,
+    steps: [[4,"建立四格陣列。","values = [-4, -7, -2, -9]",""],[5,"先把第一個值當成目前最大。","best = -4",""],[6,"第一格已處理，從索引 1 開始。","i = 1；best = -4",""],[8,"-7 > -4 為假，保留 best。","i = 1；best = -4",""],[9,"移到索引 2。","i = 2；best = -4",""],[8,"-2 > -4 為真，更新 best。","i = 2；best = -2",""],[9,"移到索引 3。","i = 3；best = -2",""],[8,"-9 > -2 為假。","i = 3；best = -2",""],[9,"i 更新為 4，下一次檢查時離開迴圈。","i = 4；best = -2",""],[11,"輸出目前最大值。","i = 4；best = -2","-2"]],
+    question: "把陣列改成 {-12, -15, -18, -21}，輸出是多少？",
+    answer: "-12",
+    why: "第一個值就是最大值。後續每個值都更小，best 從頭到尾保持 -12。"
+  }
+];
+const tasks = [
+  {
+    title: "將秒數拆成分鐘和秒",
+    prompt: "輸入非負整數 t（0–100000），以一個空白分隔輸出完整分鐘數與剩餘秒數。",
+    input: "125", output: "2 5", edge: "t = 0、59、60。",
+    hint: "用 60 同時求商和餘數。",
+    body: String.raw`    int t;
+    if (scanf("%d", &t) != 1) return 1;
+    printf("%d %d\n", t / 60, t % 60);`
+  },
+  {
+    title: "根據重量計算運費",
+    prompt: "輸入整數重量 w（1–100 公斤）。1–5 公斤收 60 元，6–10 公斤收 90 元，其餘收 140 元。輸出運費。",
+    input: "6", output: "90", edge: "w = 5、10、11。",
+    hint: "先用 <= 5 接住第一段，進到下一個分支時已知 w > 5。",
+    body: String.raw`    int w;
+    if (scanf("%d", &w) != 1) return 1;
+    if (w <= 5) puts("60");
+    else if (w <= 10) puts("90");
+    else puts("140");`
+  },
+  {
+    title: "解析操作代號",
+    prompt: "輸入整數代號。1 輸出 start，2 或 3 輸出 pause，0 輸出 stop，其他輸出 invalid。請用 switch。",
+    input: "3", output: "pause", edge: "代號 0、2、-1。",
+    hint: "把 case 2: 和 case 3: 排在同一段輸出之前。",
+    body: String.raw`    int op;
+    if (scanf("%d", &op) != 1) return 1;
+    switch (op) {
+        case 1: puts("start"); break;
+        case 2:
+        case 3: puts("pause"); break;
+        case 0: puts("stop"); break;
+        default: puts("invalid"); break;
+    }`
+  },
+  {
+    title: "加總偶數",
+    prompt: "輸入整數 n（0–1000），用 while 加總 1 到 n 之間所有偶數，包含 n 本身。沒有偶數時輸出 0。",
+    input: "9", output: "20", edge: "n = 0、1、2。",
+    hint: "從 2 開始，每次加 2，條件是 i <= n。",
+    body: String.raw`    int n;
+    if (scanf("%d", &n) != 1) return 1;
+    int i = 2, sum = 0;
+    while (i <= n) {
+        sum += i;
+        i += 2;
+    }
+    printf("%d\n", sum);`
+  },
+  {
+    title: "數出十進位位數",
+    prompt: "輸入整數 n（0–1000000000），用 do while 計算十進位位數。0 算一位。",
+    input: "8040", output: "4", edge: "n = 0、9、10。",
+    hint: "每輪把 n 整數除以 10，刪去最後一位。至少執行一輪。",
+    body: String.raw`    int n;
+    if (scanf("%d", &n) != 1) return 1;
+    int digits = 0;
+    do {
+        ++digits;
+        n /= 10;
+    } while (n != 0);
+    printf("%d\n", digits);`
+  },
+  {
+    title: "累加到停止訊號",
+    prompt: "依序輸入至多 100 個整數（-1–1000）。遇 0 略過，遇 -1 停止；沒有 -1 時讀到輸入結束。輸出停止前的總和。",
+    input: "3 0 7 -1 99", output: "10", edge: "第一個數是 -1，或所有數都為 0。",
+    hint: "每輪在條件裡讀下一個數。用 break 跳出，用 continue 略過本輪。",
+    body: String.raw`    int n, sum = 0;
+    while (scanf("%d", &n) == 1) {
+        if (n == -1) break;
+        if (n == 0) continue;
+        sum += n;
+    }
+    printf("%d\n", sum);`
+  },
+  {
+    title: "找最大值第一次出現的位置",
+    prompt: "先輸入 n（1–100），接著輸入 n 個整數（-1000–1000）。將它們存入陣列，輸出最大值及它第一次出現的索引（從 0 開始），用空白分隔。",
+    input: "5\n-5 -2 -9 -2 -8", output: "-2 1", edge: "只有一筆、全部相同、全部負數。",
+    hint: "從索引 0 起手，只有遇到更大的值時才更新索引。",
+    body: String.raw`    int n, values[100];
+    if (scanf("%d", &n) != 1 || n < 1 || n > 100) return 1;
+    for (int i = 0; i < n; ++i) {
+        if (scanf("%d", &values[i]) != 1) return 1;
+    }
+    int best = 0;
+    for (int i = 1; i < n; ++i) {
+        if (values[i] > values[best]) best = i;
+    }
+    printf("%d %d\n", values[best], best);`
+  },
+  {
+    title: "計算有幾筆高於平均",
+    prompt: "先輸入 n（1–100），接著輸入 n 個整數（-1000–1000）。輸出嚴格高於平均值的筆數。",
+    input: "4\n1 2 2 4", output: "1", edge: "所有值相同、平均值有小數、資料全為負數。",
+    hint: "先算 sum，再掃一次。因為 n 為正數，可以比較 values[i] × n 和 sum。",
+    body: String.raw`    int n, values[100];
+    if (scanf("%d", &n) != 1 || n < 1 || n > 100) return 1;
+    long sum = 0;
+    for (int i = 0; i < n; ++i) {
+        if (scanf("%d", &values[i]) != 1) return 1;
+        sum += values[i];
+    }
+    int count = 0;
+    for (int i = 0; i < n; ++i) {
+        if ((long)values[i] * n > sum) ++count;
+    }
+    printf("%d\n", count);`
+  }
+];
+
+const courseTasks = [
+  {
+    title: "找出區間內第一個質數",
+    prompt: "輸入整數 lo、hi（0 ≤ lo ≤ hi ≤ 10000），輸出區間 [lo, hi] 內最小的質數。若沒有，輸出 none。",
+    input: "14 22", output: "17", edge: "0 2、2 2、8 10、49 49。",
+    source: "iClass 10/12 課堂練習 · 質數與檢查因數的上限",
+    hint: "小於 2 都不是質數。因數總是成對出現，若 x 可分解，至少一個因數 ≤ √x。可用 d <= x / d 避免直接乘 d × d。",
+    body: String.raw`    int lo, hi;
+    if (scanf("%d%d", &lo, &hi) != 2) return 1;
+    for (int x = lo; x <= hi; ++x) {
+        if (x < 2) continue;
+        int prime = 1;
+        for (int d = 2; d <= x / d; ++d) {
+            if (x % d == 0) {
+                prime = 0;
+                break;
+            }
+        }
+        if (prime) {
+            printf("%d\n", x);
+            return 0;
+        }
+    }
+    puts("none");`
+  },
+  {
+    title: "對調每一位後比較大小",
+    prompt: "輸入整數 n（0–100000000），將它的十進位數字反轉成整數 r，輸出 r 及 n 和 r 的絕對差，以一個空白分隔。反轉後的前導零省略。",
+    input: "12040", output: "4021 8019", edge: "0、7、1221、1200。",
+    source: "iClass 第 6 週作業 · 用 while 拆解和反轉數字",
+    hint: "用 n % 10 取個位，再用 n / 10 去掉個位。r 每輪先乘 10，再加新的一位；保留原數做比較。",
+    body: String.raw`    long n;
+    if (scanf("%ld", &n) != 1) return 1;
+    long remaining = n, reversed = 0;
+    while (remaining > 0) {
+        reversed = reversed * 10 + remaining % 10;
+        remaining /= 10;
+    }
+    long difference = n >= reversed ? n - reversed : reversed - n;
+    printf("%ld %ld\n", reversed, difference);`
+  },
+  {
+    title: "輸出空心方框",
+    prompt: "輸入整數 n（1–20），輸出 n 行、每行 n 個字元的方框。邊框用 #，內部用 .。每行最後換行。",
+    input: "4", output: "####\n#..#\n#..#\n####", edge: "n = 1、2、3。",
+    source: "iClass 第 7 週作業 · 巢狀迴圈與圖形輸出",
+    hint: "外層代表列，內層代表欄。第一或最後一列、第一或最後一欄都是邊框。",
+    body: String.raw`    int n;
+    if (scanf("%d", &n) != 1) return 1;
+    for (int row = 0; row < n; ++row) {
+        for (int col = 0; col < n; ++col) {
+            int onEdge = row == 0 || row == n - 1 || col == 0 || col == n - 1;
+            putchar(onEdge ? '#' : '.');
+        }
+        putchar('\n');
+    }`
+  },
+  {
+    title: "比對兩份報名名單",
+    prompt: "先輸入 n、m（0–20），再輸入 n 個 A 組編號和 m 個 B 組編號（1–100，同一組內無重複）。輸出兩組共有幾個編號，以及僅 A 組有幾個，以空白分隔。",
+    input: "4 3\n7 13 4 1\n2 13 7", output: "2 2", edge: "其中一組為空、完全重疊、完全不重疊。",
+    source: "iClass 11/3 實習練習 · 比較兩組資料的交集",
+    hint: "對 A 組每個值，掃一次 B 組。遇到相等就增加交集計數，並用 break 結束這一輪的內層搜尋。",
+    body: String.raw`    int n, m, a[20], b[20], common = 0;
+    if (scanf("%d%d", &n, &m) != 2 || n < 0 || n > 20 || m < 0 || m > 20) return 1;
+    for (int i = 0; i < n; ++i) {
+        if (scanf("%d", &a[i]) != 1) return 1;
+    }
+    for (int j = 0; j < m; ++j) {
+        if (scanf("%d", &b[j]) != 1) return 1;
+    }
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            if (a[i] == b[j]) {
+                ++common;
+                break;
+            }
+        }
+    }
+    printf("%d %d\n", common, n - common);`
+  },
+  {
+    title: "平均到小數第一位",
+    prompt: "輸入整數 a、b（0 ≤ a ≤ 10000，1 ≤ b ≤ 1000），計算 a ÷ b，依序輸出截到小數第一位與四捨五入到小數第一位的結果，各占一行。",
+    input: "11 4", output: "2.7\n2.8", edge: "1 8、1 4、199 20、0 3。",
+    source: "iClass 第 3 週作業、11/3 實習練習 · 小數截斷與四捨五入",
+    hint: "先將分子乘 10，用整數除法求十分位的整數值。若兩倍餘數至少等於除數，就把四捨五入的十分位整數加一。",
+    body: String.raw`    long a, b;
+    if (scanf("%ld%ld", &a, &b) != 2 || b <= 0) return 1;
+    long scaled = a * 10;
+    long truncated = scaled / b;
+    long rounded = truncated;
+    if (2 * (scaled % b) >= b) ++rounded;
+    printf("%ld.%ld\n", truncated / 10, truncated % 10);
+    printf("%ld.%ld\n", rounded / 10, rounded % 10);`
+  },
+  {
+    title: "兩個數字的各位平方和",
+    prompt: "輸入整數 a、b（0–100000000）。分別算各位數字的平方和，輸出平方和較大的原數。若兩個平方和相等，輸出 tie。",
+    input: "53 144", output: "53", edge: "0 0、12 21、10 2。",
+    source: "iClass 11/3 實習練習 · 拆位與整數次方",
+    hint: "先把兩個原數存進長度 2 的陣列。各做一次拆位迴圈，用 digit × digit 累加，最後比較平方和。",
+    body: String.raw`    long values[2];
+    if (scanf("%ld%ld", &values[0], &values[1]) != 2) return 1;
+    long sums[2] = {0, 0};
+    for (int i = 0; i < 2; ++i) {
+        long n = values[i];
+        while (n > 0) {
+            long digit = n % 10;
+            sums[i] += digit * digit;
+            n /= 10;
+        }
+    }
+    if (sums[0] == sums[1]) puts("tie");
+    else printf("%ld\n", sums[0] > sums[1] ? values[0] : values[1]);`
+  }
+];
+
+function element(tag, text, className) {
+  const node = document.createElement(tag);
+  if (text !== undefined) node.textContent = text;
+  if (className) node.className = className;
+  return node;
+}
+
+function codeBlock(source) {
+  const pre = element("pre");
+  pre.append(element("code", source));
+  return pre;
+}
+
+function disclosure(label, ...children) {
+  const details = element("details");
+  details.append(element("summary", label), ...children);
+  return details;
+}
+
+function button(label, action) {
+  const control = element("button", label);
+  control.type = "button";
+  control.addEventListener("click", action);
+  return control;
+}
+
+const prefix = "c-practice-v1:";
+const transient = new Map();
+function read(key) {
+  try { return transient.get(key) ?? localStorage.getItem(prefix + key) ?? ""; }
+  catch { return transient.get(key) ?? ""; }
+}
+function save(key, value) {
+  transient.set(key, value);
+  try { localStorage.setItem(prefix + key, value); }
+  catch { /* Storage may be unavailable when opening a local file. */ }
+}
+function fileDownload(filename, contents) {
+  const objectURL = URL.createObjectURL(new Blob([contents], {type: "text/plain;charset=utf-8"}));
+  const link = element("a");
+  link.href = objectURL;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(objectURL), 1000);
+}
+
+function trace(lesson, number) {
+  const lab = element("section", undefined, "lab");
+  lab.setAttribute("aria-label", "程式執行追蹤");
+  const header = element("div", undefined, "lab-title");
+  header.append(element("strong", "程式執行追蹤"), element("span", lesson.input ? "固定輸入 " + lesson.input : "main.c"));
+  const pre = element("pre", undefined, "trace-code");
+  const code = element("code");
+  const lines = lesson.code.split("\n").map((line, index) => {
+    const row = element("span", undefined, "line");
+    const lineNumber = element("span", String(index + 1), "ln");
+    lineNumber.setAttribute("aria-hidden", "true");
+    row.append(lineNumber, document.createTextNode(line));
+    return row;
+  });
+  code.append(...lines);
+  pre.append(code);
+
+  let step = 0;
+  const controls = element("div", undefined, "lab-controls");
+  const previous = button("上一步", () => { step--; render(); });
+  const next = button("下一步", () => { step++; render(); });
+  const reset = button("重來", () => { step = 0; render(); });
+  const download = button("下載 .c", () => fileDownload("lesson-" + number + ".c", lesson.code + "\n"));
+  const count = element("span");
+  controls.append(previous, next, reset, download, count);
+
+  const live = element("div");
+  live.setAttribute("aria-live", "polite");
+  const note = element("p", undefined, "trace-note");
+  const output = element("div", undefined, "trace-output");
+  const vars = element("div");
+  const stdout = element("div");
+  const varsText = element("code");
+  const stdoutText = element("code");
+  vars.append(element("strong", "變數快照"), varsText);
+  stdout.append(element("strong", "目前輸出"), stdoutText);
+  output.append(vars, stdout);
+  live.append(note, output);
+  const body = element("div", undefined, "trace-body");
+  body.append(controls, live);
+  lab.append(header, pre, body);
+
+  function render() {
+    const [line, description, values, printed] = lesson.steps[step - 1] ??
+      [0, "按「下一步」開始。可以先猜最後會印出什麼。", "", ""];
+    for (const [index, row] of lines.entries()) {
+      row.classList.toggle("active", index + 1 === line);
+    }
+    note.textContent = line ? "第 " + line + " 行 · " + description : description;
+    varsText.textContent = values || "—";
+    stdoutText.textContent = printed || "（尚無輸出）";
+    count.textContent = step + " / " + lesson.steps.length;
+    previous.disabled = reset.disabled = step === 0;
+    next.disabled = step === lesson.steps.length;
+  }
+  render();
+  return lab;
+}
+
+function normalizeOutput(output) {
+  return output.trim().split(/\r?\n/).map(line => line.trim().replace(/[ \t]+/g, " ")).join("\n");
+}
+
+function quickCheck(lesson, number) {
+  const container = element("div", undefined, "check");
+  const input = element("textarea");
+  input.id = "answer-" + number;
+  input.rows = lesson.answer.split("\n").length + 1;
+  input.autocomplete = "off";
+  input.spellcheck = false;
+  const label = element("label", "先作答");
+  label.htmlFor = input.id;
+  const feedback = element("p", "", "feedback");
+  feedback.setAttribute("role", "status");
+  const submit = button("核對輸出", () => {
+    const actual = normalizeOutput(input.value);
+    feedback.textContent = !actual ? "先填入你預測的輸出。" :
+      actual === normalizeOutput(lesson.answer) ? "正確。你可以展開解析確認推理。" :
+        "再追蹤一次，檢查輸出的順序與換行。";
+  });
+  input.addEventListener("input", () => { feedback.textContent = ""; });
+  container.append(label, element("p", lesson.question), input, submit, feedback,
+    disclosure("顯示答案與解析", codeBlock(lesson.answer), element("p", lesson.why)));
+  return container;
+}
+
+function updateProgress() {
+  const count = lessons.filter((_, index) => read("done-" + (index + 1)) === "true").length;
+  document.getElementById("progress").textContent = "已完成 " + count + " / " + lessons.length + " 課";
+}
+
+function renderLesson(lesson, number) {
+  const section = element("section", undefined, "lesson");
+  section.id = "lesson-" + number;
+  const head = element("div", undefined, "lesson-head");
+  const heading = element("h2", lesson.title);
+  head.append(element("p", lesson.tag, "eyebrow"), heading);
+  const notes = element("ul");
+  for (const note of lesson.notes) notes.append(element("li", note));
+  const pitfall = element("p");
+  pitfall.append(element("strong", "常見錯誤　"), document.createTextNode(lesson.pitfall));
+
+  const completion = element("input");
+  completion.type = "checkbox";
+  completion.checked = read("done-" + number) === "true";
+  completion.addEventListener("change", () => {
+    save("done-" + number, String(completion.checked));
+    updateProgress();
+  });
+  const mark = element("label");
+  mark.append(completion, document.createTextNode(" 我已完成這一課"));
+  section.append(head, element("p", lesson.goal, "lead"), notes, pitfall,
+    trace(lesson, number), quickCheck(lesson, number), mark);
+  return section;
+}
+
+function solutionFor(task) {
+  return "#include <stdio.h>\n\nint main(void) {\n" + task.body + "\n    return 0;\n}\n";
+}
+
+function renderTask(task, number, group) {
+  const article = element("article", undefined, "task");
+  const sample = element("div", undefined, "task-grid");
+  for (const [label, value] of [["範例輸入", task.input], ["範例輸出", task.output]]) {
+    const column = element("div");
+    column.append(element("strong", label), codeBlock(value));
+    sample.append(column);
+  }
+  const draft = element("textarea");
+  const fileID = group + "-" + number;
+  draft.id = "draft-" + fileID;
+  draft.rows = 5;
+  draft.spellcheck = false;
+  draft.value = read(draft.id);
+  draft.addEventListener("input", () => save(draft.id, draft.value));
+  const draftLabel = element("label", "我的程式草稿");
+  draftLabel.htmlFor = draft.id;
+  const draftDownload = button("下載草稿 .c", () => fileDownload(fileID + ".c", draft.value));
+  draftDownload.disabled = !draft.value.trim();
+  draft.addEventListener("input", () => { draftDownload.disabled = !draft.value.trim(); });
+  const actions = element("div", undefined, "actions");
+  actions.append(draftDownload);
+  const solution = solutionFor(task);
+  article.append(element("h3", number + "．" + task.title));
+  if (task.source) article.append(element("p", task.source, "badge"));
+  article.append(element("p", task.prompt), sample,
+    element("p", "可自測的邊界　" + task.edge, "badge"), draftLabel, draft, actions,
+    disclosure("顯示提示", element("p", task.hint)),
+    disclosure("顯示參考解法", codeBlock(solution),
+      button("下載參考解法 .c", () => fileDownload(fileID + "-solution.c", solution))));
+  return article;
+}
+
+const lessonList = document.getElementById("lessons");
+const nav = document.getElementById("nav");
+const anchors = document.createDocumentFragment();
+for (const [index, lesson] of lessons.entries()) {
+  const number = index + 1;
+  lessonList.append(renderLesson(lesson, number));
+  const item = element("li");
+  const link = element("a");
+  link.href = "#lesson-" + number;
+  link.append(element("span", String(number).padStart(2, "0")), document.createTextNode(lesson.title));
+  item.append(link);
+  anchors.append(item);
+}
+nav.prepend(anchors);
+function markCurrentLocation() {
+  for (const link of nav.querySelectorAll("a")) {
+    if (link.hash === location.hash) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
+  }
+}
+addEventListener("hashchange", markCurrentLocation);
+markCurrentLocation();
+const tasksList = document.getElementById("tasks");
+for (const [index, task] of tasks.entries()) tasksList.append(renderTask(task, index + 1, "practice"));
+const courseTasksList = document.getElementById("course-tasks");
+for (const [index, task] of courseTasks.entries()) courseTasksList.append(renderTask(task, index + 1, "course"));
+const cppLink = document.querySelector('a[href="#cpp"]');
+const cppDetails = document.getElementById("cpp");
+cppLink.addEventListener("click", () => { cppDetails.open = true; });
+if (location.hash === "#cpp") cppDetails.open = true;
+updateProgress();
+if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+</script>
+</body>
+</html>
